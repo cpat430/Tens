@@ -15,32 +15,40 @@ class Card {
 
     to_string() {
 
+        let output;
+
         if (this.value == 11) {
-            this.value = 'Jack';
+            output= 'Jack';
         } else if (this.value == 12) {
-            this.value = 'Queen';
+            output = 'Queen';
         } else if (this.value == 13) {
-            this.value = 'King';
+            output = 'King';
         } else if (this.value == 14) {
-            this.value = 'Ace'
+            output = 'Ace'
+        } else {
+            output = value;
         }
 
-        return this.value + " of " + this.suit;
+        return output + " of " + this.suit;
     }
 
     toString() { // need this for readline-synd
 
+        let output;
+
         if (this.value == 11) {
-            this.value = 'Jack';
+            output= 'Jack';
         } else if (this.value == 12) {
-            this.value = 'Queen';
+            output = 'Queen';
         } else if (this.value == 13) {
-            this.value = 'King';
+            output = 'King';
         } else if (this.value == 14) {
-            this.value = 'Ace'
+            output = 'Ace'
+        } else {
+            output = this.value;
         }
 
-        return this.value + " of " + this.suit;
+        return output + " of " + this.suit;
     }
 }
 
@@ -151,7 +159,7 @@ class Trick {
 
     // gets the winner assuming all cards played are valid
     get_winner(first) {
-        var cards = this.cards,
+        let cards = this.cards,
             card,
             suit,
             best = cards[0],
@@ -162,13 +170,21 @@ class Trick {
         if (cards[0].value == 10) {
             this.tens++;
         }
+        console.log(this.tens);
+
+        console.log(cards[0]);
 
         for (let i = 1; i < cards.length; i++) {
             card = cards[i];
 
+            console.log(card.value);
+
             if (card.value == 10) {
                 this.tens++;
             }
+            console.log(this.tens);
+
+            console.log(card);
 
             // if the first card is not a trump
             if (suit != trump) {
@@ -259,6 +275,8 @@ while (tricks.length < max_score) {
         index = readline.keyInSelect(hand, 'Which card would you like to play?');
 
         let card = players[turn].hand.splice(index,1);
+
+        console.log('value: ' + card.value);
 
         trick.cards.push(card);
 
