@@ -274,14 +274,15 @@ while (tricks.length < max_score) {
 
         index = readline.keyInSelect(hand, 'Which card would you like to play?');
 
-        let card = players[turn].hand.splice(index,1);
+        let card = players[turn].hand.splice(index,1)[0];
 
-        console.log('value: ' + card.value);
+        // remove the card
+        // players[turn].hand.splice(index,1);
 
         trick.cards.push(card);
 
         // display the played card
-        console.log(card);
+        console.log(card.to_string);
 
         turn = (turn + 1) % num_players;
     }
