@@ -27,6 +27,21 @@ class Card {
 
         return this.value + " of " + this.suit;
     }
+
+    toString() { // need this for readline-synd
+
+        if (this.value == 11) {
+            this.value = 'Jack';
+        } else if (this.value == 12) {
+            this.value = 'Queen';
+        } else if (this.value == 13) {
+            this.value = 'King';
+        } else if (this.value == 14) {
+            this.value = 'Ace'
+        }
+
+        return this.value + " of " + this.suit;
+    }
 }
 
 class Deck {
@@ -91,7 +106,7 @@ class Player {
             index = readline.keyInSelect(suits, 'Which suit?');
         }
 
-        console.log('Ok, ' + suits[index] + ' is now the trump.');
+        console.log('Ok, ' + suits[index] + ' is now the trump.\n');
 
         trump = suits[index];
 
@@ -220,7 +235,7 @@ for (let p of players) {
 
 // now that the hands are all dealt, first player will start.
 let tricks = [],
-    winning_player = 3; // first player is 3
+    winning_player = 1; // first player is 3
 
 // while there are still tricks able to be played
 while (tricks.length < max_score) {
@@ -231,17 +246,24 @@ while (tricks.length < max_score) {
     // find the person who starts
     let turn = winning_player - 1;
 
+    console.log('Player ' + winning_player + ' starts.' + '\n');
+
     for (let i = 0; i < players.length; i++) {
 
-        // show the users hand
-        players[turn].display_hand();
+        let hand = players[turn].hand;
 
+        // show the users hand and 
         // ask the user what card they want to play
-        
+        let index = -1;
 
-        let card = players[turn].hand.pop();
+        index = readline.keyInSelect(hand, 'Which card would you like to play?');
+
+        let card = players[turn].hand.splice(index,1);
 
         trick.cards.push(card);
+
+        // display the played card
+        console.log(card);
 
         turn = (turn + 1) % num_players;
     }
