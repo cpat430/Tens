@@ -26,7 +26,7 @@ class Card {
         } else if (this.value == 14) {
             output = 'Ace'
         } else {
-            output = value;
+            output = this.value;
         }
 
         return output + " of " + this.suit;
@@ -49,6 +49,14 @@ class Card {
         }
 
         return output + " of " + this.suit;
+    }
+
+    get_suit() {
+        for (let i = 0; i < 4; i++) {
+            if (this.suit == suits[i]) {
+                return i;
+            }
+        }
     }
 }
 
@@ -94,6 +102,7 @@ class Player {
         this.hand = [];
         this.tricks = [];
         this.tens = 0;
+        this.num_suits = [0,0,0,0];
     }
 
     get_trump() {
@@ -143,6 +152,20 @@ class Player {
     display_hand() {
         for (let i = 0; i < this.hand.length; i++) {
             console.log(this.hand[i].to_string());
+        }
+    }
+
+    count_suits() {
+        for (let i = 0; i < this.hand.length; i++) {
+            if (this.hand[i].suit == suits[0]) {
+                this.num_suits[0]++;
+            } else if (this.hand[i].suit == suits[1]) {
+                this.num_suits[1]++;
+            } else if (this.hand[i].suit == suits[2]) {
+                this.num_suits[2]++;
+            } else if (this.hand[i].suit == suits[3]) {
+                this.num_suits[3]++;
+            }
         }
     }
 }
@@ -247,6 +270,7 @@ trump = players[0].get_trump();
 // deal 13 cards each in players hands
 for (let p of players) {
     p.hand = deck.deal(p.hand, 13);
+    p.count_suits();
 }
 
 // now that the hands are all dealt, first player will start.
@@ -264,25 +288,65 @@ while (tricks.length < max_score) {
 
     console.log('Player ' + winning_player + ' starts.' + '\n');
 
+    let valid_suit = "";
+
     for (let i = 0; i < players.length; i++) {
 
         let hand = players[turn].hand;
+        hand.sort(function(a,b) { // sort by suit and then by value if they are the same
+            var A = a.suit.toUpperCase(); // ignore upper and lowercase
+            var B = b.suit.toUpperCase(); // ignore upper and lowercase
+            if (A < B) {
+                return -1;
+            }
+            if (A > B) {
+                return 1;
+            }
+
+            // names must be equal
+            return b.suit - a.suit;
+        });
+
+        console.log(players[turn].num_suits);
 
         // show the users hand and 
         // ask the user what card they want to play
+
+        // if the card value isn't valid, then ask again only if this is not the first player
         let index = -1;
+        if (i != 0) {
+            let valid = false;
+            while (!valid) {
+                
+                index = readline.keyInSelect(hand, 'Which card would you like to play?');
+    
+                let this_card = players[turn].hand[index];
+                let this_suit = this_card.suit;
 
-        index = readline.keyInSelect(hand, 'Which card would you like to play?');
+                if (this_suit == valid_suit) {
+                    valid = true;
+                } else if (players[turn].num_suits[suits.indexOf(valid_suit)] == 0) {
+                    valid = true;
+                } else {
+                    console.log("That is not a valid suit, please choose something with the suit: " + valid_suit);
+                }
+            }
+        } else {
 
+            index = readline.keyInSelect(hand, 'Which card would you like to play?');
+
+            valid_suit = players[turn].hand[index].suit;
+        }
+
+        // save the card and remove it from the hand
         let card = players[turn].hand.splice(index,1)[0];
 
-        // remove the card
-        // players[turn].hand.splice(index,1);
+        players[turn].num_suits[card.get_suit()]--;
 
         trick.cards.push(card);
 
         // display the played card
-        console.log(card.to_string);
+        console.log(card.to_string());
 
         turn = (turn + 1) % num_players;
     }
