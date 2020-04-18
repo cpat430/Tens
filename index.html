@@ -1,18 +1,18 @@
 <html>
   <head>
-    <title>Tens!!</title>
-    <style>
-      canvas {
-        width: 800px;
-        height: 600px;
-        border: 5px solid black;
-      }
-    </style>
-    <p id='state'></p>
+    <title>Tens!!</title>    
     <script src="/socket.io/socket.io.js"></script>
   </head>
   <body>
+    <p id='state'></p>
+
     <canvas id="canvas"></canvas>
+    <p id='hand'></p>
+    <p></p>
+    <label>Move:</label>
+    <input id="textinput" type="text" name="Input"><br><br>
+    <input id="button" type="submit" value="Submit">
+    
   </body>
   <script src="/static/client.js"></script>
 </html>
