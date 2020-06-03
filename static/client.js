@@ -28,12 +28,20 @@ socket.on('init', function(state) {
 });
 
 // called on every update of the state
-socket.on('state', function (player, state) {
-    if (player == id) hand.innerHTML = state;
+socket.on('state', function (state) {
+    hand.innerHTML = state;
 });
 
 socket.on('table', function (cards) {
     showState(cards);
+})
+
+socket.on('onturn', function() {
+    document.getElementById('turn').innerHTML="On Turn";
+})
+
+socket.on('offturn', function() {
+    document.getElementById('turn').innerHTML="Off Turn";
 })
 
 // show function - resets the canvas and prints the current state
@@ -41,5 +49,5 @@ function showState(state) {
     let ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, 800, 600);
     ctx.fillText(state, 0, 300);
-    console.log(state);
+    // console.log(state);
 }

@@ -22,7 +22,7 @@ server.listen(PORT, function () {
 });
 
 // create the suits and the card values to create a deck of cards
-let suits = ['Spades', 'Clubs', 'Diamonds', 'Hearts'];
+let suits = ['S', 'C', 'D', 'H'];
 let values = [2,3,4,5,6,7,8,9,10,11,12,13,14];
 const num_players = 4;
 const max_score = 13;
@@ -37,26 +37,22 @@ class Card {
         let output;
 
         if (this.value == 11) {
-            output= 'Jack';
+            output= 'J';
         } else if (this.value == 12) {
-            output = 'Queen';
+            output = 'Q';
         } else if (this.value == 13) {
-            output = 'King';
+            output = 'K';
         } else if (this.value == 14) {
-            output = 'Ace'
+            output = 'A'
         } else {
             output = this.value;
         }
 
-        return output + " of " + this.suit;
+        return suits[this.suit] + output;
     }
 
     get_suit() {
-        for (let i = 0; i < 4; i++) {
-            if (this.suit == suits[i]) {
-                return i;
-            }
-        }
+        return this.suit;
     }
 }
 
@@ -66,7 +62,7 @@ class Deck {
     }
 
     create_deck(suits, values) {
-        for (let suit of suits) {
+        for (let suit = 0; suit < 4; suit++) {
             for (let value of values) {
                 this.deck.push(new Card(suit, value));
             }
@@ -90,8 +86,6 @@ class Deck {
         while (hand.length < cards) {
             hand.push(this.deck.pop());
         }
-
-        return hand;
     }
 }
 
@@ -149,25 +143,28 @@ class Player {
 
     count_suits() {
         for (let i = 0; i < this.hand.length; i++) {
-            if (this.hand[i].suit == suits[0]) {
-                this.num_suits[0]++;
-            } else if (this.hand[i].suit == suits[1]) {
-                this.num_suits[1]++;
-            } else if (this.hand[i].suit == suits[2]) {
-                this.num_suits[2]++;
-            } else if (this.hand[i].suit == suits[3]) {
-                this.num_suits[3]++;
-            }
+            this.num_suits[this.hand[i].get_suit()]++;
         }
     }
 
     toString() {
         let s = "";
         for (let i = 0; i < this.hand.length; i++) {
-            s += this.hand[i].toString();
-            if (i != this.hand.length-1) s += ", ";
+            s += this.hand[i].toString() + " ";
         }
         return s;
+    }
+
+    sortHand() {
+        this.hand.sort(function(a, b) {
+            if (a.suit === b.suit) {
+                if (a.value < b.value) return -1;
+                if (a.value > b.value) return 1;
+                return 0;
+            }
+            if (a.suit < b.suit) return -1;
+            if (a.suit > b.suit) return 1;
+        });
     }
 }
 
@@ -202,14 +199,9 @@ class Trick {
         for (let i = 1; i < cards.length; i++) {
             card = cards[i];
 
-            console.log(card.value);
-
             if (card.value == 10) {
                 this.tens++;
             }
-            console.log(this.tens);
-
-            console.log(card);
 
             // if the first card is not a trump
             if (suit != this.trump) {
@@ -245,7 +237,7 @@ class Trick {
     toString() {
         let s = "";
         for (let i = 0; i < this.cards.length; i++) {
-            s += this.cards[i].toString();
+            s += this.cards[i].toString() + " ";
         }
         return s;
     }
@@ -270,8 +262,9 @@ class Game {
 
         // deal 13 cards each in players hands
         for (let p of this.players) {
-            p.hand = this.deck.deal(p.hand, 13);
+            this.deck.deal(p.hand, 13);
             p.count_suits();
+            p.sortHand();
         }
         this.tricks = [];
         this.winning_player = 0;
@@ -292,7 +285,14 @@ class Game {
             console.log('Player ' + this.winning_player + ' starts.' + '\n');
 
             this.valid_suit = "";
-        }
+        } else {
+            // If it is not a new trick, check if it matches suit if possible
+            // Check if the player has any of this suit left
+            if (this.players[this.turn].num_suits[this.trick.get_suit()] !== 0 && this.players[this.turn].hand[index].suit !== this.trick.get_suit()) {
+                console.log("Absolutely illegal");
+                return;
+            }
+        }       
 
     
         // save the card and remove it from the hand
@@ -326,6 +326,7 @@ class Game {
                 //break;
             }
             this.trick = null;
+            this.turn = this.winning_player;
         }
     }
 }
@@ -333,6 +334,7 @@ class Game {
 
 let game = new Game();
 let total_players = 0;
+let sockets = [];
 
 // everything is initialised here
 io.on('connection', function (socket) {
@@ -343,23 +345,32 @@ io.on('connection', function (socket) {
         id = total_players++;
         console.log("This is ID " + total_players);
         
-
         socket.emit('init', id);
+        if (id === 0) {
+            socket.emit('onturn');
+        } else {
+            socket.emit('offturn');
+        }
+        sockets.push(socket);
     });
 
     socket.on('turn', function (index) {
         // update game state, only it the id is the right player
         if (game.turn == id) {
+            let prevturn = game.turn;
             game.make_move(index);
-            console.log(index);
+            if (prevturn !== game.turn) {
+                sockets[prevturn].emit('offturn');
+                sockets[game.turn].emit('onturn');
+            }
         }
     });
 });
 
 // continuously updates the state
 setInterval(function () {
-    for (let i = 0; i < 4; i++) {
-        io.sockets.emit('state', i, game.players[i].toString()); 
+    for (let i = 0; i < sockets.length; i++) {
+        sockets[i].emit('state', game.players[i].toString()); 
     }
     if (game.trick == null) {
         io.sockets.emit('table', "");
