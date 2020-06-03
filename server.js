@@ -18,11 +18,8 @@ app.get('/', function (request, response) {
 });
 
 server.listen(PORT, function () {
-    console.log('Starting server on port');
+    console.log('Starting server on port 5000');
 });
-/////////////////////////////////////////////////
- // create a readline interface for reading input from user
- var readline = require('readline-sync');
 
 // create the suits and the card values to create a deck of cards
 let suits = ['Spades', 'Clubs', 'Diamonds', 'Hearts'];
@@ -90,7 +87,6 @@ class Deck {
     }
 
     deal(hand, cards) {
-
         while (hand.length < cards) {
             hand.push(this.deck.pop());
         }
@@ -110,8 +106,6 @@ class Player {
 
     get_trump() {
 
-        var trump;
-
         // deal five cards to the first player
         this.hand = deck.deal(this.hand, 5);
 
@@ -128,15 +122,15 @@ class Player {
 
         console.log('Ok, ' + suits[index] + ' is now the trump.\n');
 
-        trump = suits[index];
+        let trump = suits[index];
 
         return trump;
     }
 
     check_win(partner) {
 
-        console.log('tens: ' + (this.tens + partner.tens));
-        console.log('tricks: ' + (this.tricks.length + partner.tricks.length));
+        console.log('Tens: ' + (this.tens + partner.tens));
+        console.log('Tricks: ' + (this.tricks.length + partner.tricks.length));
 
         if ((this.tens + partner.tens) > 2) {
             return true;
