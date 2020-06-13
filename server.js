@@ -9,6 +9,8 @@ var io = socketIO(server);
 
 const PORT = process.env.PORT || 5000
 
+console.log("HI, it works");
+
 app.set('port', PORT);
 app.use('/static', express.static(__dirname + '/static'));
 
