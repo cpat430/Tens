@@ -340,6 +340,7 @@ class Game {
 let game = new Game();
 let total_players = 0;
 let sockets = [];
+let names = [null, null, null, null];
 
 // everything is initialised here
 io.on('connection', function (socket) {
@@ -367,9 +368,15 @@ io.on('connection', function (socket) {
         }
     });
 
+    socket.on('name', function(name) {
+        names[id] = name;
+    })
+
     socket.on('disconnect', function() {
         console.log("Disconnected :(");
         let i = sockets.indexOf(socket);
+        names[i] = null;
+        
         sockets.splice(i, 1);
         total_players--;
     })

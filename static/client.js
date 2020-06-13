@@ -17,6 +17,7 @@ function getName() {
 }
 
 let playerName = getName();
+socket.emit('name', playerName);
 
 // handles clicking as a turn
 button.onclick = turn;
