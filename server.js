@@ -11,6 +11,7 @@ const PORT = process.env.PORT || 5000;
 
 app.set('port', PORT);
 app.use('/static', express.static(__dirname + '/static'));
+app.use('/cards', express.static(__dirname + '/cards'));
 
 // Routing
 app.get('/', function (request, response) {
@@ -369,19 +370,18 @@ io.on('connection', function (socket) {
                 sockets[game.turn].emit('onturn');
             }
         }
+        update();
+        console.log("hi");
     });
 });
 
-// continuously updates the state
-setInterval(function () {
+function update() {
     for (let i = 0; i < sockets.length; i++) {
-        sockets[i].emit('state', game.players[i].toString()); 
+        sockets[i].emit('state', game.players[i]); 
     }
     if (game.trick == null) {
         io.sockets.emit('table', "");
     } else {
         io.sockets.emit('table', game.trick.toString());
     }
-    
-   
-}, 1000 / 60);
+}

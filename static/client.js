@@ -29,7 +29,22 @@ socket.on('init', function(state) {
 
 // called on every update of the state
 socket.on('state', function (state) {
-    hand.innerHTML = state;
+
+    // reset the div state
+    // hand = "";
+
+    for (let i = 0; i < state.hand.length; i++) {
+        // set the card to a png image
+        let img = new Image(75,100);
+       
+        img.src = 'cards/joker.jpeg';
+
+        console.log(img);
+
+        hand.appendChild(img);
+    }
+    // hand.innerHTML = state;
+    // hand.appendChild() = state;
 });
 
 socket.on('table', function (cards) {
