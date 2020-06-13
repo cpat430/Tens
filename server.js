@@ -343,21 +343,17 @@ let sockets = [];
 
 // everything is initialised here
 io.on('connection', function (socket) {
-    let id = -1;
-    
-    // on each new player connection, these functions are called
-    socket.on('new player', function () {
-        id = total_players++;
-        console.log("This is ID " + total_players);
+    let id = total_players++;
+
+    console.log("This is ID " + total_players);
         
-        socket.emit('init', id);
-        if (id === 0) {
-            socket.emit('onturn');
-        } else {
-            socket.emit('offturn');
-        }
-        sockets.push(socket);
-    });
+    socket.emit('init', id);
+    if (id === 0) {
+        socket.emit('onturn');
+    } else {
+        socket.emit('offturn');
+    }
+    sockets.push(socket);
 
     socket.on('turn', function (index) {
         // update game state, only it the id is the right player
@@ -370,6 +366,13 @@ io.on('connection', function (socket) {
             }
         }
     });
+
+    socket.on('disconnect', function() {
+        console.log("Disconnected :(");
+        let i = sockets.indexOf(socket);
+        sockets.splice(i, 1);
+        total_players--;
+    })
 });
 
 // continuously updates the state

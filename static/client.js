@@ -12,6 +12,12 @@ var button = document.getElementById('button');
 var textinput = document.getElementById('textinput');
 var hand = document.getElementById('hand');
 
+function getName() {
+    return (prompt("Your name please"));
+}
+
+let playerName = getName();
+
 // handles clicking as a turn
 button.onclick = turn;
 function turn(e) {
@@ -22,7 +28,7 @@ var id = -1;
 // called on initialising the player
 socket.on('init', function(state) {
     let paragraph = document.getElementById('state');
-    paragraph.innerHTML = "You are person " + state;
+    paragraph.innerHTML = "You are person " + state + playerName;
     id = state;
 
 });
