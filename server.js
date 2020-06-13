@@ -14,7 +14,12 @@ app.use('/static', express.static(__dirname + '/static'));
 
 // Routing
 app.get('/', function (request, response) {
-    response.sendFile(path.join(__dirname, 'index.html'));
+    response.sendFile(path.join(__dirname, 'menu.html'));
+});
+
+// Routing
+app.get('/game', function (request, response) {
+    response.sendFile(path.join(__dirname, 'game.html'));
 });
 
 server.listen(PORT, function () {
