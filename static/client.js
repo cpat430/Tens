@@ -1,7 +1,8 @@
 // keep this!
 var socket = io();
 
-socket.emit('new player');
+// here, you can declare which room you want to join, and what your name is
+socket.emit('new player', '12345', 'ashl3y harri$');
 
 var canvas = document.getElementById('canvas');
 canvas.width = 800;
@@ -11,13 +12,6 @@ canvas.style.border = "2px solid";
 var button = document.getElementById('button');
 var textinput = document.getElementById('textinput');
 var hand = document.getElementById('hand');
-
-function getName() {
-    return (prompt("Your name please"));
-}
-
-let playerName = getName();
-socket.emit('name', playerName);
 
 // handles clicking as a turn
 button.onclick = turn;
@@ -29,7 +23,7 @@ var id = -1;
 // called on initialising the player
 socket.on('init', function(state) {
     let paragraph = document.getElementById('state');
-    paragraph.innerHTML = "You are person " + state + playerName;
+    paragraph.innerHTML = "You are person " + state;
     id = state;
 
 });
@@ -73,3 +67,4 @@ function showState(state) {
     ctx.fillText(state, 0, 300);
     // console.log(state);
 }
+

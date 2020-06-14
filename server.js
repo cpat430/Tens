@@ -33,24 +33,36 @@ server.listen(PORT, function () {
 
 //////////////////////
 
-let game = new Game();
-let total_players = 0;
+let all_games = new Map();
+let player_counter = new Map();
+
 let sockets = [];
-let names = [null, null, null, null];
 
 // everything is initialised here
 io.on('connection', function (socket) {
-    let id = total_players++;
+    let id = -1;
+    let game = null;
 
-    console.log("This is ID " + total_players);
-        
-    socket.emit('init', id);
-    if (id === 0) {
-        socket.emit('onturn');
-    } else {
-        socket.emit('offturn');
-    }
     sockets.push(socket);
+
+    socket.on('new player', function(roomid, name) {
+        if (!all_games.has(roomid)) {
+            all_games.set(roomid, new Game());
+            player_counter.set(roomid, 0);
+        }
+        game = all_games.get(roomid);
+
+        id = player_counter.get(roomid) + 1;
+        player_counter.set(roomid, id);
+
+        console.log("This is ID " + id);  
+        socket.emit('init', id);
+        if (id === 0) {
+            socket.emit('onturn');
+        } else {
+            socket.emit('offturn');
+        }
+    })
 
     socket.on('turn', function (index) {
         // update game state, only it the id is the right player
@@ -62,21 +74,16 @@ io.on('connection', function (socket) {
                 sockets[game.turn].emit('onturn');
             }
         }
-        update();
+        socket.emit('state', game.players[id]);
+        //update();
         console.log("hi");
-    });
-
-    socket.on('name', function(name) {
-        names[id] = name;
-    })
+    });    
 
     socket.on('disconnect', function() {
         console.log("Disconnected :(");
         let i = sockets.indexOf(socket);
-        names[i] = null;
         
         sockets.splice(i, 1);
-        total_players--;
     })
 });
 
