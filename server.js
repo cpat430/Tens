@@ -303,6 +303,11 @@ class Game {
         // save the card and remove it from the hand
         let card = this.players[this.turn].hand.splice(index,1)[0];
 
+        // append to the canvas
+        // var canv = document.getElementById('canvas');
+
+        // canv.appendChild(card.toString());
+
         this.players[this.turn].num_suits[card.get_suit()]--;
 
         this.trick.cards.push(card);
@@ -371,6 +376,7 @@ io.on('connection', function (socket) {
             let works = game.make_move(index);
             
             if (works) {
+
                 if (prevturn !== game.turn) {
                     sockets[prevturn].emit('offturn');
                     sockets[game.turn].emit('onturn');
