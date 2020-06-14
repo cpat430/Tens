@@ -304,9 +304,7 @@ class Game {
         let card = this.players[this.turn].hand.splice(index,1)[0];
 
         // append to the canvas
-        // var canv = document.getElementById('canvas');
-
-        // canv.appendChild(card.toString());
+        // socket.emit('valid', card);
 
         this.players[this.turn].num_suits[card.get_suit()]--;
 
@@ -373,15 +371,24 @@ io.on('connection', function (socket) {
         // update game state, only it the id is the right player
         if (game.turn == id) {
             let prevturn = game.turn;
-            let works = game.make_move(index);
+            let currentCard = game.players[id].hand[index];
+            let works = game.make_move(index); // game turn increases after this
             
             if (works) {
 
-                if (prevturn !== game.turn) {
+                console.log('emitted valid move');
+                for (let i = 0; i < sockets.length; i++) {
+                    sockets[i].emit('valid', currentCard.toString());
+                }
+                // sockets[prevturn].emit('valid', currentCard.toString());
+
+                if (prevturn !== game.turn) {    
+
                     sockets[prevturn].emit('offturn');
                     sockets[game.turn].emit('onturn');
                 }
             } else {
+                game.turn--; // undo the game turn added from the method
                 sockets[prevturn].emit('invalid');
             }
         }

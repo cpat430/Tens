@@ -48,6 +48,22 @@ socket.on('offturn', function() {
     document.getElementById('turn').innerHTML="Off Turn";
 });
 
+socket.on('valid', function(card) {
+    // canvas.innerHTML.appendChild(card);
+    // canvas.appendChild(card);
+    // canvas.fillText(card);
+    // var text = document.getElementById('played-cards');
+
+    // text.innerHTML.appendChild(card);
+    // text.innerHTML = card;
+
+    // canvas.innerText = card;
+    var context = canvas.getContext("2d");
+    context.font = '30px Arial';
+    context.fillText("sup dawg", canvas.height, canvas.width);
+    
+});
+
 socket.on('invalid', function() {
     alert("Invalid move, please choose a different card");
 });
