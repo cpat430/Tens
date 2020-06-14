@@ -296,11 +296,10 @@ class Game {
             // Check if the player has any of this suit left
             if (this.players[this.turn].num_suits[this.trick.get_suit()] !== 0 && this.players[this.turn].hand[index].suit !== this.trick.get_suit()) {
                 console.log("Absolutely illegal");
-                return;
+                return false;
             }
         }       
 
-    
         // save the card and remove it from the hand
         let card = this.players[this.turn].hand.splice(index,1)[0];
 
@@ -334,6 +333,10 @@ class Game {
             this.trick = null;
             this.turn = this.winning_player;
         }
+
+        console.log('found this part');
+
+        return true;
     }
 }
 //////////////////////
@@ -365,13 +368,17 @@ io.on('connection', function (socket) {
         // update game state, only it the id is the right player
         if (game.turn == id) {
             let prevturn = game.turn;
-            game.make_move(index);
-            if (prevturn !== game.turn) {
-                sockets[prevturn].emit('offturn');
-                sockets[game.turn].emit('onturn');
+            let works = game.make_move(index);
+            
+            if (works) {
+                if (prevturn !== game.turn) {
+                    sockets[prevturn].emit('offturn');
+                    sockets[game.turn].emit('onturn');
+                }
+            } else {
+                sockets[prevturn].emit('invalid');
             }
         }
-        // update();
     });
 
     socket.on('name', function(name) {

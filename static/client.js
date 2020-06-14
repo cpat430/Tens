@@ -36,29 +36,21 @@ socket.on('init', function(state) {
 
 });
 
-// called on every update of the state
-socket.on('state', function (state) {
-
-    // reset the div state
-    // hand = "";
-
-    // remove the card from the hand and the screen 
-    
-    // hand.innerHTML = state;
-    // hand.appendChild() = state;
-});
-
 socket.on('table', function (cards) {
     showState(cards);
-})
+});
 
 socket.on('onturn', function() {
     document.getElementById('turn').innerHTML="On Turn";
-})
+});
 
 socket.on('offturn', function() {
     document.getElementById('turn').innerHTML="Off Turn";
-})
+});
+
+socket.on('invalid', function() {
+    alert("Invalid move, please choose a different card");
+});
 
 socket.on('initialiseHand', function(initialHand, suits) {
     for (let i = 0; i < initialHand.length; i++) {
@@ -66,16 +58,15 @@ socket.on('initialiseHand', function(initialHand, suits) {
         let cardString = suits[initialHand[i].suit] + initialHand[i].value;
 
         // set the card to a png image
-        let img = new Image(75,100);
+        let img = new Image(69,101);
         img.src = 'cards/full_deck/' + cardString + '.png';
 
         console.log(img.src);
         img.onclick = function() {
             var currentCard = this.card;
-            console.log(currentCard);
-            console.log("I am playing a card " + i);
+            console.log("I am playing " + currentCard);
 
-            // play the card that is clicked
+            // play the card that is clicked if it is valid
             turn(i);
         };
 
