@@ -21,8 +21,9 @@ socket.emit('name', playerName);
 
 // handles clicking as a turn
 button.onclick = turn;
-function turn(e) {
-    socket.emit('turn', textinput.value); // this is the way of having a turn
+function turn(value) {
+    // socket.emit('turn', textinput.value); // this is the way of having a turn
+    socket.emit('turn', value);
 }
 
 var id = -1;
@@ -31,6 +32,7 @@ socket.on('init', function(state) {
     let paragraph = document.getElementById('state');
     paragraph.innerHTML = "You are person " + state + playerName;
     id = state;
+    // update();
 
 });
 
@@ -40,16 +42,8 @@ socket.on('state', function (state) {
     // reset the div state
     // hand = "";
 
-    for (let i = 0; i < state.hand.length; i++) {
-        // set the card to a png image
-        let img = new Image(75,100);
-       
-        img.src = 'cards/joker.jpeg';
-
-        console.log(img);
-
-        hand.appendChild(img);
-    }
+    // remove the card from the hand and the screen 
+    
     // hand.innerHTML = state;
     // hand.appendChild() = state;
 });
@@ -64,6 +58,29 @@ socket.on('onturn', function() {
 
 socket.on('offturn', function() {
     document.getElementById('turn').innerHTML="Off Turn";
+})
+
+socket.on('initialiseHand', function(initialHand, suits) {
+    for (let i = 0; i < initialHand.length; i++) {
+
+        let cardString = suits[initialHand[i].suit] + initialHand[i].value;
+
+        // set the card to a png image
+        let img = new Image(75,100);
+        img.src = 'cards/full_deck/' + cardString + '.png';
+
+        console.log(img.src);
+        img.onclick = function() {
+            var currentCard = this.card;
+            console.log(currentCard);
+            console.log("I am playing a card " + i);
+
+            // play the card that is clicked
+            turn(i);
+        };
+
+        hand.appendChild(img);
+    }
 })
 
 // show function - resets the canvas and prints the current state

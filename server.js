@@ -348,6 +348,10 @@ io.on('connection', function (socket) {
     let id = total_players++;
 
     console.log("This is ID " + total_players);
+
+    // intialiseHand(game.players[id].hand);
+    socket.emit('initialiseHand', game.players[id].hand, suits);
+    // update();
         
     socket.emit('init', id);
     if (id === 0) {
@@ -367,8 +371,7 @@ io.on('connection', function (socket) {
                 sockets[game.turn].emit('onturn');
             }
         }
-        update();
-        console.log("hi");
+        // update();
     });
 
     socket.on('name', function(name) {
@@ -386,9 +389,12 @@ io.on('connection', function (socket) {
 });
 
 function update() {
-    for (let i = 0; i < sockets.length; i++) {
-        sockets[i].emit('state', game.players[i]); 
-    }
+
+    // current_socket.emit('state', game.players[i]);
+    // for (let i = 0; i < sockets.length; i++) {
+    //     sockets[i].emit('state', game.players[i]); 
+    // }
+
     if (game.trick == null) {
         io.sockets.emit('table', "");
     } else {
