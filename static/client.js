@@ -60,7 +60,7 @@ socket.on('valid', function(card) {
     // canvas.innerText = card;
     var context = canvas.getContext("2d");
     context.font = '30px Arial';
-    context.fillText("sup dawg", canvas.height, canvas.width);
+    context.fillText("sup dawg", canvas.height/2, canvas.width/2);
     
 });
 
