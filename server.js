@@ -63,7 +63,13 @@ io.on('connection', function (socket) {
         } else {
             socket.emit('offturn');
         }
-    })
+    });
+
+    socket.on('made-move', function(card, player) {
+        for (let i = 0; i < 4; i++) {
+            socket.emit('update-move', card, player);
+        }
+    }); 
 
     socket.on('turn', function (index) {
         // update game state, only it the id is the right player
@@ -73,12 +79,14 @@ io.on('connection', function (socket) {
             let works = game.make_move(index); // game turn increases after this
             
             if (works) {
+                let cardId = currentCard.suit.toString() + currentCard.value.toString();
 
                 console.log('emitted valid move');
                 for (let i = 0; i < sockets.length; i++) {
-                    sockets[i].emit('valid', currentCard.toString());
+                    console.log(i);
+                    sockets[i].emit('update-move', cardId, id);
                 }
-                // sockets[prevturn].emit('valid', currentCard.toString());
+                sockets[id].emit('valid', currentCard, id);
 
                 if (prevturn !== game.turn) {    
 

@@ -26,8 +26,6 @@ socket.on('init', function(state) {
     let paragraph = document.getElementById('state');
     paragraph.innerHTML = "You are person " + state;
     id = state;
-    // update();
-
 });
 
 socket.on('table', function (cards) {
@@ -42,24 +40,40 @@ socket.on('offturn', function() {
     document.getElementById('turn').innerHTML="Off Turn";
 });
 
-socket.on('valid', function(card) {
-    // canvas.innerHTML.appendChild(card);
-    // canvas.appendChild(card);
-    // canvas.fillText(card);
-    // var text = document.getElementById('played-cards');
+socket.on('valid', function(card, player) {
+    var cardId = card.suit.toString() + card.value.toString();
 
-    // text.innerHTML.appendChild(card);
-    // text.innerHTML = card;
-
-    // canvas.innerText = card;
-    var context = canvas.getContext("2d");
-    context.font = '30px Arial';
-    context.fillText("sup dawg", canvas.height/2, canvas.width/2);
+    // remove the card from the hand
+    var toRemove = document.getElementById(cardId);
     
+    toRemove.parentNode.removeChild(toRemove);
 });
 
 socket.on('invalid', function() {
     alert("Invalid move, please choose a different card");
+});
+
+socket.on('update-move', function(cardId, player) {
+    
+    var card = document.getElementById(cardId);
+    var i,j;
+
+    if (player == 0) {
+        i = 450 - 34.5;
+        j = 400 - 50.5;
+    } else if (player == 1) {
+        i = 300 - 34.5;
+        j = 600 - 50.5;
+    } else if (player == 2) {
+        i = 150 - 34.5;
+        j = 400 - 50.5;
+    } else {
+        i = 300 - 34.5;
+        j = 200 - 50.5;
+    }
+
+    var context = canvas.getContext("2d");
+    context.drawImage(card, i, j); 
 });
 
 socket.on('initialiseHand', function(initialHand, suits) {
@@ -71,7 +85,9 @@ socket.on('initialiseHand', function(initialHand, suits) {
         let img = new Image(69,101);
         img.src = 'cards/full_deck/' + cardString + '.png';
 
-        console.log(img.src);
+        // set the id of the image so it can be removed later
+        img.id = initialHand[i].suit.toString() + initialHand[i].value.toString();
+
         img.onclick = function() {
             // var currentCard = this.card;
             console.log("I am playing " + cardString);
