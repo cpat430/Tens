@@ -41,6 +41,7 @@ let suits = ["S", "C", "D", "H"];
 io.on('connection', function (socket) {
     let id = -1;
     let game = null;
+    let turn = 0;
 
     sockets.push(socket);
 
@@ -83,8 +84,8 @@ io.on('connection', function (socket) {
 
                 console.log('emitted valid move');
                 for (let i = 0; i < sockets.length; i++) {
-                    
-                    sockets[i].emit('update-move', suits, currentCard.suit, currentCard.value, id);
+                    let relPlayer = (id-i + sockets.length) % sockets.length;
+                    sockets[i].emit('update-move', suits, currentCard.suit, currentCard.value, relPlayer);
                 }
                 sockets[id].emit('valid', currentCard, id);
 

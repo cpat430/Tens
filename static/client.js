@@ -60,6 +60,7 @@ socket.on('update-move', function(suits, suit, value, player) {
     var cardWidth = 69 * 2;
     var cardHeight = 101 * 2;
 
+    // determine the position of the card based on the player
     if (player == 0) {
         x = canvas.width/2 - cardWidth/2;
         y = ((canvas.height*3)/4) - cardHeight/2;
@@ -74,20 +75,20 @@ socket.on('update-move', function(suits, suit, value, player) {
         y = canvas.height/2 - cardHeight/2;
     }
 
+    // get the card's image value
     let cValue = suits[suit].toString() + value.toString();
+
+    // create a new image for the played card
     let img = new Image();
-
     img.src = 'cards/full_deck/' + cValue + '.png';
-    img.width = 69;
-    img.height = 101;
 
+    // get the context of the canvas
     var context = canvas.getContext("2d");
 
     // once the image loads, it will place the card on the screen
     img.addEventListener('load', function() {
         context.drawImage(img, x, y, cardWidth, cardHeight);
-    }, false);
-
+    }, false); // no idea what the false means
 });
 
 socket.on('initialiseHand', function(initialHand, suits) {
@@ -107,6 +108,7 @@ socket.on('initialiseHand', function(initialHand, suits) {
             turn(i);
         };
 
+        // append the image to the player's hand
         hand.appendChild(img);
     }
 })
@@ -116,6 +118,5 @@ function showState(state) {
     let ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, 800, 600);
     ctx.fillText(state, 0, 300);
-    // console.log(state);
 }
 
