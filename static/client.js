@@ -56,35 +56,38 @@ socket.on('invalid', function() {
 socket.on('update-move', function(suits, suit, value, player) {
     
     // var card = document.getElementById(cardId);
-    var i,j;
+    var x,y;
+    var cardWidth = 69 * 2;
+    var cardHeight = 101 * 2;
 
     if (player == 0) {
-        i = 450 - 34.5;
-        j = 400 - 50.5;
+        x = canvas.width/2 - cardWidth/2;
+        y = ((canvas.height*3)/4) - cardHeight/2;
     } else if (player == 1) {
-        i = 300 - 34.5;
-        j = 600 - 50.5;
+        x = ((canvas.width * 3)/4) - cardWidth/2;
+        y = canvas.height/2 - cardHeight/2;
     } else if (player == 2) {
-        i = 150 - 34.5;
-        j = 400 - 50.5;
+        x = canvas.width/2 - cardWidth/2;
+        y = canvas.height/4 - cardHeight/2;
     } else {
-        i = 300 - 34.5;
-        j = 200 - 50.5;
+        x = canvas.width/4 - cardWidth/2;
+        y = canvas.height/2 - cardHeight/2;
     }
 
     let cValue = suits[suit].toString() + value.toString();
-    let img = new Image(69,101);
+    let img = new Image();
+
     img.src = 'cards/full_deck/' + cValue + '.png';
-
-    console.log(img.src);
-
-    // set the id of the image so it can be removed later
-    img.id = suit.toString() + value.toString();
-
-    console.log(img.id);
+    img.width = 69;
+    img.height = 101;
 
     var context = canvas.getContext("2d");
-    context.drawImage(img, canvas.height/2, canvas.width/2);
+
+    // once the image loads, it will place the card on the screen
+    img.addEventListener('load', function() {
+        context.drawImage(img, x, y, cardWidth, cardHeight);
+    }, false);
+
 });
 
 socket.on('initialiseHand', function(initialHand, suits) {
@@ -100,9 +103,6 @@ socket.on('initialiseHand', function(initialHand, suits) {
         img.id = initialHand[i].suit.toString() + initialHand[i].value.toString();
 
         img.onclick = function() {
-            // var currentCard = this.card;
-            console.log("I am playing " + cardString);
-
             // play the card that is clicked if it is valid
             turn(i);
         };

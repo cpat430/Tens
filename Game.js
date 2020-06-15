@@ -60,7 +60,6 @@ module.exports = class Game {
             }
         }       
 
-    
         // save the card and remove it from the hand
         let card = this.players[this.turn].hand.splice(index,1)[0];
 
