@@ -102,6 +102,7 @@ io.on('connection', function (socket) {
                     for (let i = 0; i < sockets.length; i++) {
                         sockets[i].emit('reset-canvas');
                     }
+                    currentTurn = 0;
                 }
             } else {
                 game.turn--; // undo the game turn added from the method
