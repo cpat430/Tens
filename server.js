@@ -36,12 +36,12 @@ let player_counter = new Map();
 
 let sockets = [];
 let suits = ["S", "C", "D", "H"];
+let currentTurn = 0;
 
 // everything is initialised here
 io.on('connection', function (socket) {
     let id = -1;
     let game = null;
-    let turn = 0;
 
     sockets.push(socket);
 
@@ -80,9 +80,7 @@ io.on('connection', function (socket) {
             let works = game.make_move(index); // game turn increases after this
             
             if (works) {
-                // let cardId = currentCard.suit.toString() + currentCard.value.toString();
 
-                console.log('emitted valid move');
                 for (let i = 0; i < sockets.length; i++) {
                     let relPlayer = (id-i + sockets.length) % sockets.length;
                     sockets[i].emit('update-move', suits, currentCard.suit, currentCard.value, relPlayer);
@@ -93,6 +91,17 @@ io.on('connection', function (socket) {
 
                     sockets[prevturn].emit('offturn');
                     sockets[game.turn].emit('onturn');
+                }
+
+                currentTurn++;
+
+                console.log(currentTurn, 'hello');
+
+                if (currentTurn == 5) {
+                    // reset the canvas
+                    for (let i = 0; i < sockets.length; i++) {
+                        sockets[i].emit('reset-canvas');
+                    }
                 }
             } else {
                 game.turn--; // undo the game turn added from the method

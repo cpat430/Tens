@@ -111,7 +111,15 @@ socket.on('initialiseHand', function(initialHand, suits) {
         // append the image to the player's hand
         hand.appendChild(img);
     }
-})
+});
+
+socket.on('reset-canvas', function() {
+
+    console.log('cleared');
+    var context = canvas.getContext("2d");
+
+    context.clearRect(0, 0, canvas.width, canvas.height);
+});
 
 // show function - resets the canvas and prints the current state
 function showState(state) {
