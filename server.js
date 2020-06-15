@@ -79,12 +79,12 @@ io.on('connection', function (socket) {
             let works = game.make_move(index); // game turn increases after this
             
             if (works) {
-                let cardId = currentCard.suit.toString() + currentCard.value.toString();
+                // let cardId = currentCard.suit.toString() + currentCard.value.toString();
 
                 console.log('emitted valid move');
                 for (let i = 0; i < sockets.length; i++) {
-                    console.log(i);
-                    sockets[i].emit('update-move', cardId, id);
+                    
+                    sockets[i].emit('update-move', suits, currentCard.suit, currentCard.value, id);
                 }
                 sockets[id].emit('valid', currentCard, id);
 

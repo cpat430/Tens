@@ -53,9 +53,9 @@ socket.on('invalid', function() {
     alert("Invalid move, please choose a different card");
 });
 
-socket.on('update-move', function(cardId, player) {
+socket.on('update-move', function(suits, suit, value, player) {
     
-    var card = document.getElementById(cardId);
+    // var card = document.getElementById(cardId);
     var i,j;
 
     if (player == 0) {
@@ -72,8 +72,19 @@ socket.on('update-move', function(cardId, player) {
         j = 200 - 50.5;
     }
 
+    let cValue = suits[suit].toString() + value.toString();
+    let img = new Image(69,101);
+    img.src = 'cards/full_deck/' + cValue + '.png';
+
+    console.log(img.src);
+
+    // set the id of the image so it can be removed later
+    img.id = suit.toString() + value.toString();
+
+    console.log(img.id);
+
     var context = canvas.getContext("2d");
-    context.drawImage(card, i, j); 
+    context.drawImage(img, canvas.height/2, canvas.width/2);
 });
 
 socket.on('initialiseHand', function(initialHand, suits) {
