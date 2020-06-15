@@ -17,7 +17,8 @@ module.exports = class Trick {
             card,
             suit,
             best = cards[0],
-            player = first;
+            player = first,
+            num_players = 4;
 
         suit = cards[0].suit;
 

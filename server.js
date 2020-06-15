@@ -29,8 +29,6 @@ server.listen(PORT, function () {
     console.log('Starting server on port 5000');
 });
 
-
-
 //////////////////////
 
 let all_games = new Map();
