@@ -115,6 +115,42 @@ function initializeListeners() {
             hand.appendChild(img);
         }
     });
+
+    socket.on('update-scoreboard', function(gameOver, tens, winner) {
+
+        console.log(gameOver, tens, winner);
+
+        if (winner == 1) {
+            let team1Tricks = document.getElementById('team1-tricks');
+            let team1Tens = document.getElementById('team1-tens');
+
+            team1Tricks.innerHTML++;
+            team1Tens.innerHTML = eval(team1Tens.innerHTML) + eval(tens);
+
+        } else {
+            let team2Tricks = document.getElementById('team2-tricks');
+            let team2Tens = document.getElementById('team2-tens');
+
+            team2Tricks.innerHTML++;
+            team2Tens.innerHTML = eval(team2Tens.innerHTML) + eval(tens);
+        }
+
+        if (gameOver) {
+            let id = 'team' + winner + '-total-score';
+            let winningTeam = document.getElementById(id);
+
+            winningTeam.innerHTML++;
+            return;
+        }
+
+        console.log('tens', tens);
+
+        
+    });
+
+    socket.on('end-of-game', function(message) {
+        alert(message);
+    });
     
     socket.on('reset-canvas', function() {
         
@@ -123,6 +159,8 @@ function initializeListeners() {
         
         context.clearRect(0, 0, canvas.width, canvas.height);
     });
+
+    
 }
 
 // handles clicking as a turn

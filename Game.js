@@ -41,6 +41,11 @@ module.exports = class Game {
     }
     
     make_move(curSuit, index) {
+        let works = true;
+        let winner = -1;
+        let tens = 0;
+        let gameOver = false;
+
         if (this.trick === null) {
             // create a new trick
             this.trick = new Trick(this.trump);
@@ -56,7 +61,14 @@ module.exports = class Game {
             // Check if the player has any of this suit left
             if (this.players[this.turn].num_suits[this.trick.get_suit()] !== 0 && curSuit !== this.trick.get_suit()) {
                 console.log("Absolutely illegal");
-                return false;
+
+                works = false;
+                return {
+                    works,
+                    winner,
+                    tens,
+                    gameOver
+                };
             }
         }       
 
@@ -66,13 +78,10 @@ module.exports = class Game {
         this.players[this.turn].num_suits[card.get_suit()]--;
 
         this.trick.cards.push(card);
-        
-        // display the played card
-        console.log(card.toString());
 
         this.turn = (this.turn + 1) % 4;
 
-        if (this.trick.cards.length == 4) {
+        if (this.trick.cards.length === 4) {
             this.winning_player = this.trick.get_winner(this.winning_player);
             console.log('Player ' + this.winning_player + ' won!');
 
@@ -83,17 +92,36 @@ module.exports = class Game {
             // get the winning partner
             this.winning_partner = (this.winning_player + 2) % 4;
             
+            console.log('winners', this.winning_player, this.winning_partner);
+
+            if ((this.winning_partner + this.winning_player) === 2) {
+                // team 1
+                winner = 1;
+            } else {
+                // team 2
+                winner = 2;
+            }
+
+            tens = this.trick.tens;
+
             this.tricks.push(this.trick);
 
             // check if the player who won the trick is winning
             if (this.players[this.winning_player].check_win(this.players[this.winning_partner])) {
                 console.log('Player ' + this.winning_player + ' and ' + this.winning_partner + " has won!");
                 //break;
+                // if there is a game winner
+                gameOver = true;
             }
             this.trick = null;
             this.turn = this.winning_player;
         }
-        return true;
+        return {
+            works,
+            winner,
+            tens,
+            gameOver
+        };
     }
 }
 

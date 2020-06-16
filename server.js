@@ -97,17 +97,25 @@ io.on('connection', function (socket) {
                 }
             }
             
-            let works = game.make_move(currentCard.suit, index); // game turn increases after this
-            
+            let {works, winner, tens, gameOver} = game.make_move(currentCard.suit, index); // game turn increases after this
+
             if (works) {
+
+                if (currentTurn === 3) {
+                    // take the winner and update their scoreboard
+                    for (let i = 0; i < 4; i++) {
+                        sockets[i].emit('update-scoreboard', gameOver, tens, winner);
+                    }
+                }
                 
                 // if this is the last turn, remove on the next valid move.
-                if (currentTurn == 4) {
+                if (currentTurn === 4) {
                     // reset the canvas
                     for (let i = 0; i < room_sockets.get(_roomid).length; i++) {
                         room_sockets.get(_roomid)[i].emit('reset-canvas');
                     }
                     currentTurn = 0;
+
                 }
                 
                 for (let i = 0; i < room_sockets.get(_roomid).length; i++) {
@@ -120,7 +128,15 @@ io.on('connection', function (socket) {
                 room_sockets.get(_roomid)[prevturn].emit('offturn');
                 room_sockets.get(_roomid)[game.turn].emit('onturn');            
                 
-                currentTurn++;                
+                currentTurn++;  
+                
+                if (gameOver) {
+                    
+                    let message = "Team" + winner + " won the game";
+
+                    socket.emit('end-of-game', message);
+                }
+
             } else {
                 // game.turn--; // undo the game turn added from the method
                 room_sockets.get(_roomid)[prevturn].emit('invalid');
