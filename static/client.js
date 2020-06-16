@@ -1,6 +1,7 @@
 // global variables
 var socket = io(); 
 var canvas = document.getElementById('canvas');
+var scoreboard = document.getElementById('scoreboard');
 var hand = document.getElementById('hand');
 var id = -1; // current player id
 
@@ -14,6 +15,13 @@ function initializeCanvas() {
     canvas.width = 800;
     canvas.height = 600;
     canvas.style.border = "2px solid";
+}
+
+function initialiseScoreboard() {
+    // leaderboard.width = 400;
+    // leaderboard.height = 300;
+    // leaderboard.style.border = "2px solid";
+
 }
 
 function initializeListeners() {
@@ -131,4 +139,5 @@ function showState(state) {
 
 initializePlayer();
 initializeCanvas();
+initialiseScoreboard();
 initializeListeners();
