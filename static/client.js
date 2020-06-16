@@ -59,14 +59,14 @@ function initializeListeners() {
         if (relPlayer == 0) {
             x = canvas.width/2 - cardWidth/2;
             y = ((canvas.height*3)/4) - cardHeight/2;
-        } else if (relPlayer == 3) {
-            x = ((canvas.width * 3)/4) - cardWidth/2;
+        } else if (relPlayer == 1) {
+            x = canvas.width/4 - cardWidth/2;
             y = canvas.height/2 - cardHeight/2;
         } else if (relPlayer == 2) {
             x = canvas.width/2 - cardWidth/2;
             y = canvas.height/4 - cardHeight/2;
         } else {
-            x = canvas.width/4 - cardWidth/2;
+            x = ((canvas.width * 3)/4) - cardWidth/2;
             y = canvas.height/2 - cardHeight/2;
         }
         
