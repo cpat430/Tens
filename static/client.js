@@ -55,7 +55,6 @@ socket.on('invalid', function() {
 
 socket.on('update-move', function(suits, suit, value, player) {
     
-    // var card = document.getElementById(cardId);
     var x,y;
     var cardWidth = 69 * 2;
     var cardHeight = 101 * 2;
@@ -105,7 +104,7 @@ socket.on('initialiseHand', function(initialHand, suits) {
 
         img.onclick = function() {
             // play the card that is clicked if it is valid
-            turn(i);
+            turn(img.id);
         };
 
         // append the image to the player's hand

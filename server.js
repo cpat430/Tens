@@ -72,14 +72,36 @@ io.on('connection', function (socket) {
         }
     }); 
 
-    socket.on('turn', function (index) {
+    socket.on('turn', function (cardId) {
         // update game state, only it the id is the right player
         if (game.turn == id) {
             let prevturn = game.turn;
-            let currentCard = game.players[id].hand[index];
-            let works = game.make_move(index); // game turn increases after this
+            var currentCard;
+
+            var curPlayerHand = game.players[id].hand;
+            let index = -1;
+
+            // iterate through the players hand and see if the id is equal to the card id
+            for (let i = 0; i < curPlayerHand.length; i++) {
+                // console.log(curPlayerHand[i]);
+                if (curPlayerHand[i].id === cardId) {
+                    currentCard = curPlayerHand[i];
+                    index = i;
+                }
+            }
+
+            let works = game.make_move(currentCard.suit, index); // game turn increases after this
             
             if (works) {
+
+                // if this is the last turn, remove on the next valid move.
+                if (currentTurn == 4) {
+                    // reset the canvas
+                    for (let i = 0; i < sockets.length; i++) {
+                        sockets[i].emit('reset-canvas');
+                    }
+                    currentTurn = 0;
+                }
 
                 for (let i = 0; i < sockets.length; i++) {
                     let relPlayer = (id-i + sockets.length) % sockets.length;
@@ -93,19 +115,9 @@ io.on('connection', function (socket) {
                     sockets[game.turn].emit('onturn');
                 }
 
-                currentTurn++;
-
-                console.log(currentTurn, 'hello');
-
-                if (currentTurn == 5) {
-                    // reset the canvas
-                    for (let i = 0; i < sockets.length; i++) {
-                        sockets[i].emit('reset-canvas');
-                    }
-                    currentTurn = 0;
-                }
+                currentTurn++;                
             } else {
-                game.turn--; // undo the game turn added from the method
+                // game.turn--; // undo the game turn added from the method
                 sockets[prevturn].emit('invalid');
             }
         }

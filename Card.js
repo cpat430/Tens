@@ -2,6 +2,7 @@ module.exports = class Card {
     constructor(suit, value) {
         this.suit = suit;
         this.value = value;
+        this.id = suit.toString() + value.toString();
     }
 
     toString() { // need this for readline-synd

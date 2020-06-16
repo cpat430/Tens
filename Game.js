@@ -40,7 +40,7 @@ module.exports = class Game {
         this.trick = null;
     }
     
-    make_move(index) {
+    make_move(curSuit, index) {
         if (this.trick === null) {
             // create a new trick
             this.trick = new Trick(this.trump);
@@ -54,7 +54,7 @@ module.exports = class Game {
         } else {
             // If it is not a new trick, check if it matches suit if possible
             // Check if the player has any of this suit left
-            if (this.players[this.turn].num_suits[this.trick.get_suit()] !== 0 && this.players[this.turn].hand[index].suit !== this.trick.get_suit()) {
+            if (this.players[this.turn].num_suits[this.trick.get_suit()] !== 0 && curSuit !== this.trick.get_suit()) {
                 console.log("Absolutely illegal");
                 return false;
             }
