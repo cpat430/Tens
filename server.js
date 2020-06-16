@@ -13,16 +13,16 @@ const PORT = process.env.PORT || 5000;
 function initializeExpress() {
     app.set('port', PORT);
     app.use('/', express.static(__dirname + '/'));
-
+    
     app.get('/', function (request, response) {
         response.sendFile(path.join(__dirname, 'menu.html'));
     });
-
+    
     // Routing
     app.get('/game', function (request, response) {
         response.sendFile(path.join(__dirname, 'game.html'));
     });
-
+    
     server.listen(PORT, function () {
         console.log('Starting server on port 5000');
     });
@@ -30,10 +30,12 @@ function initializeExpress() {
 
 
 // game global variables
-let all_games = new Map();
-let player_counter = new Map();
+let all_games = new Map(); // roomid -> 'Game' objects
+let player_counter = new Map(); // roomid -> player count
+let room_sockets = new Map(); // roomid -> socket Array
 
 let sockets = [];
+
 let suits = ["S", "C", "D", "H"];
 let currentTurn = 0;
 
@@ -41,45 +43,51 @@ let currentTurn = 0;
 io.on('connection', function (socket) {
     let id = -1;
     let game = null;
-
+    let _roomid;
+    
     sockets.push(socket);
-
+    
     socket.on('new player', function(roomid, name) {
         if (!all_games.has(roomid)) {
             all_games.set(roomid, new Game());
             player_counter.set(roomid, 0);
+            room_sockets.set(roomid, []);
         }
+        
         game = all_games.get(roomid);
-
+        _roomid = roomid;
+        
+        room_sockets.get(roomid).push(socket);
+        
         id = player_counter.get(roomid);
         player_counter.set(roomid, id + 1);
-
+        
         console.log("This is ID " + id);  
         socket.emit('init', id);
         socket.emit('initialiseHand', game.players[id].hand, suits);
-
+        
         if (id === 0) {
             socket.emit('onturn');
         } else {
             socket.emit('offturn');
         }
     });
-
-    socket.on('made-move', function(card, player) {
-        for (let i = 0; i < 4; i++) {
-            socket.emit('update-move', card, player);
-        }
-    }); 
-
+    
+    // socket.on('made-move', function(card, player) {
+    //     for (let i = 0; i < 4; i++) {
+    //         socket.emit('update-move', card, player);
+    //     }
+    // }); 
+    
     socket.on('turn', function (cardId) {
         // update game state, only it the id is the right player
         if (game.turn == id) {
             let prevturn = game.turn;
             var currentCard;
-
+            
             var curPlayerHand = game.players[id].hand;
             let index = -1;
-
+            
             // iterate through the players hand and see if the id is equal to the card id
             for (let i = 0; i < curPlayerHand.length; i++) {
                 // console.log(curPlayerHand[i]);
@@ -88,45 +96,50 @@ io.on('connection', function (socket) {
                     index = i;
                 }
             }
-
+            
             let works = game.make_move(currentCard.suit, index); // game turn increases after this
             
             if (works) {
-
+                
                 // if this is the last turn, remove on the next valid move.
                 if (currentTurn == 4) {
                     // reset the canvas
-                    for (let i = 0; i < sockets.length; i++) {
-                        sockets[i].emit('reset-canvas');
+                    for (let i = 0; i < room_sockets.get(_roomid).length; i++) {
+                        room_sockets.get(_roomid)[i].emit('reset-canvas');
                     }
                     currentTurn = 0;
                 }
-
-                for (let i = 0; i < sockets.length; i++) {
+                
+                for (let i = 0; i < room_sockets.get(_roomid).length; i++) {
                     let relPlayer = (id - i + 4) % 4;
-                    sockets[i].emit('update-move', suits, currentCard.suit, currentCard.value, relPlayer);
+                    room_sockets.get(_roomid)[i].emit('update-move', suits, currentCard.suit, currentCard.value, relPlayer);
                 }
-                sockets[id].emit('valid', currentCard, id);
-
-                if (prevturn !== game.turn) {    
-
-                    sockets[prevturn].emit('offturn');
-                    sockets[game.turn].emit('onturn');
-                }
-
+                
+                socket.emit('valid', currentCard, id);
+                
+                room_sockets.get(_roomid)[prevturn].emit('offturn');
+                room_sockets.get(_roomid)[game.turn].emit('onturn');            
+                
                 currentTurn++;                
             } else {
                 // game.turn--; // undo the game turn added from the method
-                sockets[prevturn].emit('invalid');
+                room_sockets.get(_roomid)[prevturn].emit('invalid');
             }
         }
     });
-
+    
     socket.on('disconnect', function() {
         console.log("Disconnected :(");
-        let i = sockets.indexOf(socket);
         
+        let i = sockets.indexOf(socket);
         sockets.splice(i, 1);
+        
+        try {
+            let j = room_sockets.get(_roomid).indexOf(socket);
+            room_sockets.get(_roomid).splice(j, 1);
+        } catch (e) {
+            console.log("roomid is not defined yet");
+        }
     })
 });
 

@@ -6,7 +6,8 @@ var id = -1; // current player id
 
 // declare which room you want to join, and what your name is
 function initializePlayer() {
-    socket.emit('new player', '12345', 'ashl3y harri$');
+    let room = prompt("Room?");
+    socket.emit('new player', room, 'ashl3y harri$');
 }
 
 function initializeCanvas() {
