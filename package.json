@@ -4,7 +4,7 @@
   "description": "Trick based Tongan card game.",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "node server.js"
   },
   "dependencies": {
@@ -23,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/sammochen/temp-tens/issues"
   },
-  "homepage": "https://github.com/sammochen/temp-tens#readme"
+  "homepage": "https://github.com/sammochen/temp-tens#readme",
+  "devDependencies": {
+    "jest": "^26.0.1"
+  }
 }

@@ -4,4 +4,4 @@ Trick based Tongan card game.
 
 
 Need to install:
-sudo npm install express socket.io
+sudo npm install
