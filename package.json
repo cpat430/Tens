@@ -1,10 +1,10 @@
 {
-  "name": "temp-tens",
+  "name": "Tens",
   "version": "1.0.0",
   "description": "Trick based Tongan card game.",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "node server.js"
   },
   "dependencies": {
@@ -15,13 +15,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sammochen/temp-tens.git"
+    "url": "git+https://github.com/cpat430/Tens.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/sammochen/temp-tens/issues"
+    "url": "https://github.com/cpat430/Tens/issues"
   },
-  "homepage": "https://github.com/sammochen/temp-tens#readme"
+  "homepage": "https://github.com/cpat430/Tens",
+  "devDependencies": {
+    "jest": "^26.0.1"
+  }
 }
