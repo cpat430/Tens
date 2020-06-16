@@ -48,20 +48,20 @@ function initializeListeners() {
         alert("Invalid move, please choose a different card");
     });
     
-    socket.on('update-move', function(suits, suit, value, player) {
+    socket.on('update-move', function(suits, suit, value, relPlayer) {
         
         var x,y;
         var cardWidth = 69 * 2;
         var cardHeight = 101 * 2;
         
         // determine the position of the card based on the player
-        if (player == 0) {
+        if (relPlayer == 0) {
             x = canvas.width/2 - cardWidth/2;
             y = ((canvas.height*3)/4) - cardHeight/2;
-        } else if (player == 1) {
+        } else if (relPlayer == 3) {
             x = ((canvas.width * 3)/4) - cardWidth/2;
             y = canvas.height/2 - cardHeight/2;
-        } else if (player == 2) {
+        } else if (relPlayer == 2) {
             x = canvas.width/2 - cardWidth/2;
             y = canvas.height/4 - cardHeight/2;
         } else {

@@ -103,7 +103,7 @@ io.on('connection', function (socket) {
                 }
 
                 for (let i = 0; i < sockets.length; i++) {
-                    let relPlayer = (id-i + sockets.length) % sockets.length;
+                    let relPlayer = (id - i + 4) % 4;
                     sockets[i].emit('update-move', suits, currentCard.suit, currentCard.value, relPlayer);
                 }
                 sockets[id].emit('valid', currentCard, id);
