@@ -1,6 +1,4 @@
-var Game = require('./Game.js');
-
-// Dependencies.
+// global variables
 var express = require('express');
 var http = require('http');
 var path = require('path');
@@ -8,29 +6,30 @@ var socketIO = require('socket.io');
 var app = express();
 var server = http.Server(app);
 var io = socketIO(server);
+var Game = require('./Game.js');
 
 const PORT = process.env.PORT || 5000;
 
-app.set('port', PORT);
-app.use('/static', express.static(__dirname + '/static'));
-app.use('/cards', express.static(__dirname + '/cards'));
+function initializeExpress() {
+    app.set('port', PORT);
+    app.use('/', express.static(__dirname + '/'));
 
-// Routing
-app.get('/', function (request, response) {
-    response.sendFile(path.join(__dirname, 'menu.html'));
-});
+    app.get('/', function (request, response) {
+        response.sendFile(path.join(__dirname, 'menu.html'));
+    });
 
-// Routing
-app.get('/game', function (request, response) {
-    response.sendFile(path.join(__dirname, 'game.html'));
-});
+    // Routing
+    app.get('/game', function (request, response) {
+        response.sendFile(path.join(__dirname, 'game.html'));
+    });
 
-server.listen(PORT, function () {
-    console.log('Starting server on port 5000');
-});
+    server.listen(PORT, function () {
+        console.log('Starting server on port 5000');
+    });
+}
 
-//////////////////////
 
+// game global variables
 let all_games = new Map();
 let player_counter = new Map();
 
@@ -131,16 +130,4 @@ io.on('connection', function (socket) {
     })
 });
 
-function update() {
-
-    // current_socket.emit('state', game.players[i]);
-    // for (let i = 0; i < sockets.length; i++) {
-    //     sockets[i].emit('state', game.players[i]); 
-    // }
-
-    if (game.trick == null) {
-        io.sockets.emit('table', "");
-    } else {
-        io.sockets.emit('table', game.trick.toString());
-    }
-}
+initializeExpress();
