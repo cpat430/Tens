@@ -6,8 +6,10 @@ var hand = document.getElementById('hand');
 var id = -1; // current player id
 
 // declare which room you want to join, and what your name is
-function initializePlayer() {
-    let room = prompt("Room?");
+function enterRoom() {
+    var urlParams = new URLSearchParams(window.location.search);
+    
+    let room = urlParams.get("roomid");
     socket.emit('new player', room, 'ashl3y harri$');
 }
 
@@ -21,7 +23,7 @@ function initialiseScoreboard() {
     // leaderboard.width = 400;
     // leaderboard.height = 300;
     // leaderboard.style.border = "2px solid";
-
+    
 }
 
 function initializeListeners() {
@@ -115,39 +117,39 @@ function initializeListeners() {
             hand.appendChild(img);
         }
     });
-
+    
     socket.on('update-scoreboard', function(gameOver, tens, winner) {
-
+        
         console.log(gameOver, tens, winner);
-
+        
         if (winner == 1) {
             let team1Tricks = document.getElementById('team1-tricks');
             let team1Tens = document.getElementById('team1-tens');
-
+            
             team1Tricks.innerHTML++;
             team1Tens.innerHTML = eval(team1Tens.innerHTML) + eval(tens);
-
+            
         } else {
             let team2Tricks = document.getElementById('team2-tricks');
             let team2Tens = document.getElementById('team2-tens');
-
+            
             team2Tricks.innerHTML++;
             team2Tens.innerHTML = eval(team2Tens.innerHTML) + eval(tens);
         }
-
+        
         if (gameOver) {
             let id = 'team' + winner + '-total-score';
             let winningTeam = document.getElementById(id);
-
+            
             winningTeam.innerHTML++;
             return;
         }
-
+        
         console.log('tens', tens);
-
+        
         
     });
-
+    
     socket.on('end-of-game', function(message) {
         alert(message);
     });
@@ -159,7 +161,7 @@ function initializeListeners() {
         
         context.clearRect(0, 0, canvas.width, canvas.height);
     });
-
+    
     
 }
 
@@ -175,7 +177,7 @@ function showState(state) {
     ctx.fillText(state, 0, 300);
 }
 
-initializePlayer();
+enterRoom();
 initializeCanvas();
 initialiseScoreboard();
 initializeListeners();

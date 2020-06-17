@@ -17,11 +17,16 @@ function initializeExpress() {
     app.get('/', function (request, response) {
         response.sendFile(path.join(__dirname, 'menu.html'));
     });
-    
-    // Routing
+
+    // app.get('/game', function (request, response) {
+    //     response.sendFile(path.join(__dirname, 'game.html'));
+    // });
+
     app.get('/game', function (request, response) {
-        response.sendFile(path.join(__dirname, 'game.html'));
+        console.log(request.query.roomid);
+        response.sendFile(path.join(__dirname, 'game.html'), {roomid: request.query.roomid});
     });
+
     
     server.listen(PORT, function () {
         console.log('Starting server on port 5000');
