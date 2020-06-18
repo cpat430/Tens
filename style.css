@@ -72,3 +72,14 @@ h2 {
 span {
     font-size: large;
 }
+
+.main-button-container {
+    display: inline-block;
+}
+.main-button {
+    background-color: green;
+    height: 50px;
+    width: 300px;
+    margin: 5px;
+    line-height: 300%;
+}
