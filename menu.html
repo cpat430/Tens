@@ -1,34 +1,48 @@
 <html>
-  <head>
-    <title>Tens Menu</title>    
-    <script src="/socket.io/socket.io.js"></script>
-    <link rel="stylesheet" href="style.css">
-  </head>
-  <body style="text-align: center;">
-    <div style="height: 50%; background-color: pink;">
-      Logo here
+<head>
+  <title>Tens Menu</title>    
+  <script src="/socket.io/socket.io.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body style="text-align: center;">
+  <div style="height: 50%; background-color: pink;">
+    Logo here
+  </div>
+  <div class="main-button-container" style="background-color: yellow; text-align: center;">
+    <div class="main-button">
+      New Game
     </div>
-    <div class="main-button-container" style="background-color: yellow; text-align: center;">
-      <div class="main-button">
-        New Game
-      </div>
-      <div class="main-button">
-        Join Game
-      </div>
-      <div class="main-button">
-        Rules
-      </div>
-      <div class="main-button">
-        Settings
-      </div>
+    <div class="main-button" onclick="showModal();">
+      Join Game
     </div>
-    
-    
-    <form action="/game" method="GET">
-      <p>Room ID: <input type="text" name = "roomid" placeholder = "ABCDE"></p>
-      <a href="/game"><button>Go to room</button></a>
-    </form>
-    
-  </body>
+    <div class="main-button">
+      Rules
+    </div>
+    <div class="main-button">
+      Settings
+    </div>
+  </div>
   
+  <!-- The Modal -->
+  <div id="myModal" class="modal">
+    
+    <!-- Modal content -->
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <p>Some text in the Modal..</p>
+      <form action="/game" method="GET">
+        <p>Room ID: <input type="text" name = "roomid" placeholder = "ABCDE"></p>
+        <a href="/game"><button>Go to room</button></a>
+      </form>
+    </div>
+    
+  </div>
+  
+  
+  
+  
+
+  <script src="./menu.js"></script>
+</body>
+
 </html>
