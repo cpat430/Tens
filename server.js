@@ -22,6 +22,10 @@ function initializeExpress() {
     app.get('/game', function (request, response) {
         response.sendFile(path.join(__dirname, 'game.html'));
     });
+
+    app.get('/test', function (request, response) {
+        response.sendFile(path.join(__dirname, 'test.html'));
+    });
     
     server.listen(PORT, function () {
         console.log('Starting server on port 5000');

@@ -1,3 +1,60 @@
+#header {
+    height: 7%;
+}
+
+#header div {
+    text-align: center;
+    width: 33%;
+    float:left;
+    top: 0;
+}
+
+#header #menu-div {
+    text-align: left;
+}
+
+#header #sidenav-div {
+    text-align: right;
+}
+
+#room-code-div {
+    text-align: center;
+}
+
+#gameplay {
+    /* background-color: yellow; */
+    position: absolute;
+    height: 80%;
+    width: 100%;
+    text-align: center;
+    /* float: left; */
+}
+
+#gameplay #team1-scores {
+    position: relative;
+    float: left;
+    width: 25%;
+}
+
+#gameplay #team2-scores {
+    position: relative;
+    float: left;
+    width: 25%;
+}
+
+#gameplay #game-board {
+    position: relative;
+    float: left;
+    width: 50%;
+}
+
+#game-board {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    padding-top: 80px;
+}
+
 #scoreboard {
     position: absolute;
     right: 100px;
@@ -59,6 +116,10 @@
     font-size: 40px;
 }
 
+canvas {
+    background-color: lightgreen;
+}
+
 h1 {
     text-align: center;
     margin: 10px 0px;
@@ -67,6 +128,8 @@ h1 {
 h2 {
     font-size: 20px;
     font-weight: normal;
+    margin-block-start: 0.5em;
+    margin-block-end: 0.5em;
 }
 
 span {

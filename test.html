@@ -1,0 +1,86 @@
+<html>
+  <head>
+    <title>Tens!!</title>    
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div id='header'>
+        <div id='menu-div'>
+            <a href="/">to menu</a>
+        </div>
+        <div id='title-div'>
+            <h1>Tens</h1>
+        </div>
+        <div id='sidenav-div'>
+            <a href="/">side navigation</a>
+        </div>
+    </div>
+    
+    <div id='room-code-div'>
+        <h2>Room Code: <span id='room-code'>XXXXX</span></h2>
+    </div>
+
+    <div id='gameplay'>
+        <div id='team1-scores'>
+            <h3>Team1</h3>
+            <h3>Score: <span id='team1-total-score'>0</span></h3>
+            <div id='team1-current-tricks'>
+
+            </div>
+        </div>
+        <div id='game-board'>
+            <canvas id="canvas">
+
+            </canvas>
+        </div>
+        <div id='team2-scores'>
+            <h3>Team2</h3>
+            <h3>Score: <span id='team2-total-score'>0</span></h3>
+            <div id='team2-current-tricks'>
+                
+            </div>
+        </div>
+    </div>
+<!-- 
+    <p id='state'></p>
+    <p id='turn'>Turn</p>
+
+    <div>
+      <canvas id="canvas">
+
+      </canvas>
+      <div id='scoreboard'>
+        //team names, score tally, number of tricks and tens
+        <h1 id='scoreboard-header'>Scoreboard</h1>
+        <div id='current-score'>
+          <div id='team1'>
+            <h2 id='team1-name'>Charles & Sam</h2>
+            <h2 id='tricks'><span id='team1-tricks'>0</span> tricks</h2>
+            <h2 id='tens'><span id='team1-tens'>0</span> tens</h2>
+          </div>
+          <div id='team2'>
+            <h2 id='team2-name'>Lachie & Tino</h2>
+            <h2 id='tricks'><span id='team2-tricks'>0</span> tricks</h2>
+            <h2 id='tens'><span id='team2-tens'>0</span> tens</h2>
+          </div>
+        </div>
+        <div id='total-scores'>
+          <h1 id='total-scores-header'>Total Scores</h1>
+          <div id='team1-total-score-div'>
+            <span id='team1-total-score'>0</span>
+          </div>
+          <div id=team2-total-score-div>
+            <span id='team2-total-score'>0</span>
+          </div>
+        </div>
+        
+      </div>
+    </div> -->
+    <div id='hand'>
+      <p></p>
+    </div>   
+    
+  </body>
+  <script src="/static/client.js"></script>
+</html>

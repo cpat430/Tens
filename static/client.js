@@ -12,8 +12,9 @@ function initializePlayer() {
 }
 
 function initializeCanvas() {
-    canvas.width = 800;
-    canvas.height = 600;
+
+    canvas.width = 500;
+    canvas.height = 500;
     canvas.style.border = "2px solid";
 }
 
