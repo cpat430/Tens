@@ -38,6 +38,7 @@ function initializeExpress() {
 let all_games = new Map(); // roomid -> 'Game' objects
 let player_counter = new Map(); // roomid -> player count
 let room_sockets = new Map(); // roomid -> socket Array
+let player_names = new Map();
 
 let sockets = [];
 
@@ -57,6 +58,7 @@ io.on('connection', function (socket) {
             all_games.set(roomid, new Game());
             player_counter.set(roomid, 0);
             room_sockets.set(roomid, []);
+            player_names.set(roomid, ['Alex', 'Bob', 'Candace', 'Derpina']);
         }
         
         game = all_games.get(roomid);
@@ -155,13 +157,16 @@ io.on('connection', function (socket) {
         let i = sockets.indexOf(socket);
         sockets.splice(i, 1);
         
-        try {
+        if (_roomid) {
             let j = room_sockets.get(_roomid).indexOf(socket);
             room_sockets.get(_roomid).splice(j, 1);
-        } catch (e) {
-            console.log("roomid is not defined yet");
-        }
+        } 
     })
+
+    // Asked by menu.js, returns if the game exists
+    socket.on('roomExistQuery', function(roomid) {
+        socket.emit('roomExistResult', player_names.get(roomid));
+    });
 });
 
 initializeExpress();
