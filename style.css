@@ -1,3 +1,7 @@
+html * {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
 #header {
     height: 7%;
 }
@@ -52,7 +56,7 @@
     position: relative;
     height: 100%;
     width: 100%;
-    padding-top: 80px;
+    /* margin-top: 80px; */
 }
 
 #scoreboard {

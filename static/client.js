@@ -160,8 +160,6 @@ function initializeListeners() {
         
         context.clearRect(0, 0, canvas.width, canvas.height);
     });
-
-    
 }
 
 // handles clicking as a turn
