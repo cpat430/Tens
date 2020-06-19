@@ -10,7 +10,8 @@ function enterRoom() {
     var urlParams = new URLSearchParams(window.location.search);
     
     let room = urlParams.get("roomid");
-    socket.emit('new player', room, 'ashl3y harri$');
+    let pos = urlParams.get("pos");
+    socket.emit('new player', room, pos, 'ashl3y harri$');
 }
 
 function initializeCanvas() {

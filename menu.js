@@ -23,23 +23,35 @@ function checkRoomExist(roomid) {
     socket.emit('roomExistQuery', roomid);
 }
 
+let input = document.getElementById('roomidinput');
+
 function updatePlayerNames(names) {
-    let p = document.getElementById('playerNames');
+    let grid = document.getElementsByClassName('grid')[0];
+    let items = document.getElementsByClassName('room-person');
+
     if (!names) {
-        p.innerHTML = "Loser";
+        grid.style.display = "none";
     } else {
-        p.innerHTML = names;
+        grid.style.display = "flex";
+        let order = [0,1,3,2];
+
+        for (let i = 0; i < 4; i++) {
+            items[order[i]].innerHTML = names[i];
+
+            items[order[i]].onclick = function() {enterRoom(input.value, i)};
+        }
     }
 }
 
 socket.on('roomExistResult', function(res) {
-    console.log('hello');
-    console.log(res);
     updatePlayerNames(res);
 });
 
-let input = document.getElementById('roomidinput');
 input.oninput = function() {
     checkRoomExist(input.value);
-    console.log(input.value);
+}
+
+function enterRoom(roomid, pos) {
+    location.href = "/game?roomid=" + roomid + "&pos=" + pos;
+    console.log(roomid);
 }

@@ -53,7 +53,7 @@ io.on('connection', function (socket) {
     
     sockets.push(socket);
     
-    socket.on('new player', function(roomid, name) {
+    socket.on('new player', function(roomid, pos, name) {
         if (!all_games.has(roomid)) {
             all_games.set(roomid, new Game());
             player_counter.set(roomid, 0);
@@ -63,11 +63,14 @@ io.on('connection', function (socket) {
         
         game = all_games.get(roomid);
         _roomid = roomid;
+
+        if (room_sockets.get(roomid)[pos]) {
+            throw "Bad";
+        }
         
-        room_sockets.get(roomid).push(socket);
-        
-        id = player_counter.get(roomid);
-        player_counter.set(roomid, id + 1);
+        room_sockets.get(roomid)[pos] = (socket);
+
+        id = pos;
         
         console.log("This is ID " + id);  
         socket.emit('init', id);
