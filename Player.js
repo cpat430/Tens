@@ -35,9 +35,9 @@ module.exports = class Player {
         console.log('Tens: ' + (this.tens + partner.tens));
         console.log('Tricks: ' + (this.tricks.length + partner.tricks.length));
 
-        if ((this.tens + partner.tens) > 2) {
+        if ((this.tens.length + partner.tens.length) > 2) {
             return true;
-        } else if ((this.tens + partner.tens) == 2 && (this.tricks.length + partner.tricks.length) >= 7) {
+        } else if ((this.tens.length + partner.tens.length) == 2 && (this.tricks.length + partner.tricks.length) >= 7) {
             return true;
         } else {
             return false;

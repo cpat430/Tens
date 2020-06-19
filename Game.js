@@ -43,7 +43,7 @@ module.exports = class Game {
     make_move(curSuit, index) {
         let works = true;
         let winner = -1;
-        let tens = 0;
+        let tens = [];
         let gameOver = false;
 
         if (this.trick === null) {
@@ -88,6 +88,9 @@ module.exports = class Game {
             // add the trick to the winning players tricks and add the ten value
             this.players[this.winning_player].tricks.push(this.trick);
             this.players[this.winning_player].tens += this.trick.tens;
+
+            // go through the trick to find which tens were won.
+            tens = this.trick.tens;
 
             // get the winning partner
             this.winning_partner = (this.winning_player + 2) % 4;

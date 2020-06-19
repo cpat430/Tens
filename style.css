@@ -50,13 +50,17 @@ html * {
     position: relative;
     float: left;
     width: 50%;
+    text-align: center;
 }
 
-#game-board {
+#hand {
     position: relative;
-    height: 100%;
-    width: 100%;
-    /* margin-top: 80px; */
+    left: 50%;
+    margin-left: -40%;
+}
+
+.name {
+    position: relative;
 }
 
 #scoreboard {

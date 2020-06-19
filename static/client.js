@@ -4,6 +4,10 @@ var canvas = document.getElementById('canvas');
 var scoreboard = document.getElementById('scoreboard');
 var hand = document.getElementById('hand');
 var id = -1; // current player id
+var suits = ['S', 'C', 'D', 'H'];
+var cardWidth = 69,
+    cardHeight = 101,
+    cardSpacing = 34.5;
 
 // declare which room you want to join, and what your name is
 function initializePlayer() {
@@ -96,17 +100,29 @@ function initializeListeners() {
     });
     
     socket.on('initialiseHand', function(initialHand, suits) {
+
         for (let i = 0; i < initialHand.length; i++) {
             
             let cardString = suits[initialHand[i].suit] + initialHand[i].value;
             
             // set the card to a png image
-            let img = new Image(69,101);
+            // let img = new Image(69,101);
+            let img = document.createElement('img');
+            img.width = 69;
+            img.height = 101;
             img.src = 'cards/full_deck/' + cardString + '.png';
             
             // set the id of the image so it can be removed later
             img.id = initialHand[i].suit.toString() + initialHand[i].value.toString();
             
+            // style the card here
+            // img.style.flexBasis = "200px";
+            // img.style.flex = "10px";
+            // img.style.alignContent = "space-between 10px";
+            img.style.position = "absolute";
+            // img.style.left = "20px";
+            img.style.left = ((i+1) * (cardWidth - cardSpacing) - cardSpacing) + 'px';
+
             img.onclick = function() {
                 // play the card that is clicked if it is valid
                 turn(img.id);
@@ -117,23 +133,63 @@ function initializeListeners() {
         }
     });
 
+    // updates at the end of a trick. 
     socket.on('update-scoreboard', function(gameOver, tens, winner) {
 
-        console.log(gameOver, tens, winner);
-
+        // update the scoreboard here.
         if (winner == 1) {
-            let team1Tricks = document.getElementById('team1-tricks');
-            let team1Tens = document.getElementById('team1-tens');
+            let team1Tricks = document.getElementById('team1-current-tricks');
+            // let team1Tens = document.getElementById('team1-tens');
+            let cardString = 'cards/full_deck/Back.png';
 
-            team1Tricks.innerHTML++;
-            team1Tens.innerHTML = eval(team1Tens.innerHTML) + eval(tens);
+            if (tens.length) {
+                for (let i = 0; i < tens.length; i++) {
+                    let img = document.createElement('img');
+                    cardString = 'cards/full_deck/' + suits[tens[i].suit].toString() + tens[i].value.toString() + '.png';
+                    img.src = cardString;
+                    img.width = cardWidth;
+                    img.height = cardHeight;
+                    // img.style.position = "absolute";
+                    // img.style.left = ((i+1) * (cardWidth - cardSpacing) - cardSpacing) + 'px';
+
+                    team1Tricks.appendChild(img);
+                }
+            } else {
+                let img = document.createElement('img');
+                img.src = cardString;
+                img.width = 69;
+                img.height = 101;
+                img.left = cardSpacing;
+                team1Tricks.appendChild(img);
+            }
+            // team1Tens.innerHTML = eval(team1Tens.innerHTML) + eval(tens);
 
         } else {
-            let team2Tricks = document.getElementById('team2-tricks');
-            let team2Tens = document.getElementById('team2-tens');
+            let team2Tricks = document.getElementById('team2-current-tricks');
+            // let team1Tricks = document.getElementById('team1-current-tricks');
+            // let team1Tens = document.getElementById('team1-tens');
+            let cardString = 'cards/full_deck/Back.png';
 
-            team2Tricks.innerHTML++;
-            team2Tens.innerHTML = eval(team2Tens.innerHTML) + eval(tens);
+            if (tens.length) {
+                for (let i = 0; i < tens.length; i++) {
+                    let img = document.createElement('img');
+                    cardString = 'cards/full_deck/' + suits[tens[i].suit].toString() + tens[i].value.toString() + '.png';
+                    img.src = cardString;
+                    img.width = cardWidth;
+                    img.height = cardHeight;
+                    // img.style.position = "relative";
+                    // img.style.left = ((i+1) * (cardWidth - cardSpacing) - cardSpacing) + 'px';
+
+                    team2Tricks.appendChild(img);
+                }
+            } else {
+                let img = document.createElement('img');
+                img.src = cardString;
+                img.width = 69;
+                img.height = 101;
+                img.left = cardSpacing;
+                team2Tricks.appendChild(img);
+            }
         }
 
         if (gameOver) {
@@ -142,11 +198,7 @@ function initializeListeners() {
 
             winningTeam.innerHTML++;
             return;
-        }
-
-        console.log('tens', tens);
-
-        
+        }        
     });
 
     socket.on('end-of-game', function(message) {

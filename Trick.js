@@ -3,7 +3,7 @@
 module.exports = class Trick {
     constructor(trump) {
         this.cards = [];
-        this.tens = 0;
+        this.tens = [];
         this.trump = trump;
     }
 
@@ -23,17 +23,14 @@ module.exports = class Trick {
         suit = cards[0].suit;
 
         if (cards[0].value == 10) {
-            this.tens++;
+            this.tens.push(cards[0]);
         }
-        console.log(this.tens);
-
-        console.log(cards[0]);
 
         for (let i = 1; i < cards.length; i++) {
             card = cards[i];
 
             if (card.value == 10) {
-                this.tens++;
+                this.tens.push(card);
             }
 
             // if the first card is not a trump
@@ -64,6 +61,8 @@ module.exports = class Trick {
                 }
             }
         }
+
+        console.log('tens', this.tens);
 
         return player % num_players;
     }
