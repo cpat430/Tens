@@ -11,7 +11,7 @@ function enterRoom() {
     
     let room = urlParams.get("roomid");
     let pos = urlParams.get("pos");
-    socket.emit('new player', room, pos, 'ashl3y harri$');
+    socket.emit('new player', room, pos);
 }
 
 function initializeCanvas() {
@@ -178,7 +178,14 @@ function showState(state) {
     ctx.fillText(state, 0, 300);
 }
 
+function updateName(name) {
+    socket.emit('updateName', name);
+}
+
 enterRoom();
 initializeCanvas();
 initialiseScoreboard();
 initializeListeners();
+
+
+updateName("Yoohoo");

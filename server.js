@@ -58,7 +58,7 @@ io.on('connection', function (socket) {
             all_games.set(roomid, new Game());
             player_counter.set(roomid, 0);
             room_sockets.set(roomid, []);
-            player_names.set(roomid, ['Alex', 'Bob', 'Candace', 'Derpina']);
+            player_names.set(roomid, ['', '', '', '']);
         }
         
         game = all_games.get(roomid);
@@ -153,6 +153,10 @@ io.on('connection', function (socket) {
             }
         }
     });
+
+    socket.on('updateName', function(name) {
+        player_names.get(_roomid)[id] = name;
+    })
     
     socket.on('disconnect', function() {
         console.log("Disconnected :(");

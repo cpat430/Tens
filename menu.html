@@ -9,7 +9,7 @@
     Logo here
   </div>
   <div class="main-button-container" style="background-color: yellow; text-align: center;">
-    <div class="main-button">
+    <div class="main-button" onclick="enterRoom(getRandomCode(), 0);">
       New Game
     </div>
     <div class="main-button" onclick="showModal();">
@@ -30,9 +30,9 @@
     <div class="modal-content">
       <span class="close" onclick="closeModal();">&times;</span>
       <h2>Join Game</h2>
-      <form action="/game" method="GET">
-        <p><input id='roomidinput' type="text" name = "roomid" placeholder = "Room ID"></p>
-        <p id='playerNames'>Player Names</p>
+      <form>
+        <p><input id='roomidinput' type="text" placeholder = "Room ID"></p>
+        
         <div class="grid">
           <div class="cell"></div>
           <div class="cell room-person"></div>
@@ -44,7 +44,7 @@
           <div class="cell room-person"></div>
           <div class="cell"></div>
         </div>
-        <a href="/game"><button>Join</button></a>
+        
       </form>
     </div>
     

@@ -38,7 +38,7 @@ function updatePlayerNames(names) {
         for (let i = 0; i < 4; i++) {
             items[order[i]].innerHTML = names[i];
 
-            items[order[i]].onclick = function() {enterRoom(input.value, i)};
+            if (names[i] === '') items[order[i]].onclick = function() {enterRoom(input.value, i)};
         }
     }
 }
@@ -49,6 +49,17 @@ socket.on('roomExistResult', function(res) {
 
 input.oninput = function() {
     checkRoomExist(input.value);
+    
+}
+
+function getRandomCode() {
+    let str = "";
+    let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    for (let i = 0; i < 5; i++) {
+        str += alphabet[Math.floor(Math.random() * 26)];
+    }
+    console.log(str);
+    return str;
 }
 
 function enterRoom(roomid, pos) {
