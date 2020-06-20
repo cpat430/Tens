@@ -24,7 +24,8 @@ module.exports = class Game {
         this.p4 = new Player(4);
         this.players = [this.p1,this.p2,this.p3,this.p4];
 
-        this.trump = suits[0]; // players[0].get_trump(); // TODO make it an option
+        this.trump = 0; // players[0].get_trump(); // TODO make it an option
+        // console.log('trump', this.trump);
 
         // deal 13 cards each in players hands
         for (let p of this.players) {
@@ -85,10 +86,14 @@ module.exports = class Game {
             this.winning_player = this.trick.get_winner(this.winning_player);
             console.log('Player ' + this.winning_player + ' won!');
 
+            console.log('tens---', this.tricks.tens);
             // add the trick to the winning players tricks and add the ten value
             this.players[this.winning_player].tricks.push(this.trick);
-            this.players[this.winning_player].tens += this.trick.tens;
-
+            // this.players[this.winning_player].tens += this.trick.tens;
+            if (this.trick.tens.length) {
+                this.players[this.winning_player].tens.push(this.trick.tens);
+            }
+            
             // go through the trick to find which tens were won.
             tens = this.trick.tens;
 
@@ -104,8 +109,6 @@ module.exports = class Game {
                 // team 2
                 winner = 2;
             }
-
-            tens = this.trick.tens;
 
             this.tricks.push(this.trick);
 

@@ -133,6 +133,45 @@ function initializeListeners() {
         }
     });
 
+    socket.on('redraw-hand', function(curHand) {
+
+        while (hand.firstChild) {
+            hand.removeChild(hand.firstChild);
+        }
+
+        // console.log(hand);
+        for (let i = 0; i < curHand.length; i++) {
+            
+            let cardString = suits[curHand[i].suit] + curHand[i].value;
+            
+            // set the card to a png image
+            // let img = new Image(69,101);
+            let img = document.createElement('img');
+            img.width = 69;
+            img.height = 101;
+            img.src = 'cards/full_deck/' + cardString + '.png';
+            
+            // set the id of the image so it can be removed later
+            img.id = curHand[i].suit.toString() + curHand[i].value.toString();
+            
+            // style the card here
+            // img.style.flexBasis = "200px";
+            // img.style.flex = "10px";
+            // img.style.alignContent = "space-between 10px";
+            img.style.position = "absolute";
+            // img.style.left = "20px";
+            img.style.left = ((i+1) * (cardWidth - cardSpacing) - cardSpacing) + 'px';
+
+            img.onclick = function() {
+                // play the card that is clicked if it is valid
+                turn(img.id);
+            };
+            
+            // append the image to the player's hand
+            hand.appendChild(img);
+        }
+    });
+
     // updates at the end of a trick. 
     socket.on('update-scoreboard', function(gameOver, tens, winner) {
 
