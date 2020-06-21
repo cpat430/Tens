@@ -138,31 +138,41 @@ html * {
     overflow: auto; /* Enable scroll if needed */
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-  }
+}
   
-  /* Modal Content/Box */
-  .modal-content {
+/* Modal Content/Box */
+.modal-content {
     background-color: #fefefe;
     margin: 15% auto; /* 15% from the top and centered */
-    padding: 20px;
+    padding: 0px 30px 50px 30px;
     border: 1px solid #888;
-    width: 80%; /* Could be more or less, depending on screen size */
-  }
-  
-  /* The Close Button */
-  .close {
-    color: #aaa;
-    float: right;
+    width: 30%; /* Could be more or less, depending on screen size */
+    text-align: center;
+}
+
+.modal-button {
+    color: black;
     font-size: 28px;
     font-weight: bold;
-  }
-  
-  .close:hover,
-  .close:focus {
-    color: black;
+}
+
+/* The Close Button */
+#quit {
+    float: right;
+}
+
+#ready {
+    float: left;
+    background-color: red;
+}
+
+
+.modal-button:hover,
+.modal-button:focus {
+    color: grey;
     text-decoration: none;
     cursor: pointer;
-  }
+}
 
 canvas {
     background-color: lightgreen;

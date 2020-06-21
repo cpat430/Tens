@@ -293,6 +293,20 @@ function initialiseModal() {
     }
 }
 
+// function toggle_button(btnId) {
+//     var cur_colour = document.getElementById(btnId).style.backgroundColor;
+
+//     console.log(document.getElementById(btnId).style.backgroundColor);
+
+//     var property = document.getElementById(btnId);
+
+//     if (cur_colour == "red") {
+//         property.style.backgroundColor = "green";
+//     } else {
+//         property.className = "red";
+//     }
+// }
+
 initializePlayer();
 initializeCanvas();
 initialiseScoreboard();
