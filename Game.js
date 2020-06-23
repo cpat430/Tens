@@ -86,12 +86,15 @@ module.exports = class Game {
             this.winning_player = this.trick.get_winner(this.winning_player);
             console.log('Player ' + this.winning_player + ' won!');
 
-            console.log('tens---', this.tricks.tens);
             // add the trick to the winning players tricks and add the ten value
             this.players[this.winning_player].tricks.push(this.trick);
             // this.players[this.winning_player].tens += this.trick.tens;
-            if (this.trick.tens.length) {
-                this.players[this.winning_player].tens.push(this.trick.tens);
+            // if (this.trick.tens.length) {
+            //     this.players[this.winning_player].tens.push(this.trick.tens);
+            // }
+
+            for (let i = 0; i < this.trick.tens.length; i++) {
+                this.players[this.winning_player].tens.push(this.trick.tens[i]);
             }
             
             // go through the trick to find which tens were won.
