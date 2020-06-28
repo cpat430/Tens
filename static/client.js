@@ -7,7 +7,7 @@ var id = -1; // current player id
 var suits = ['S', 'C', 'D', 'H'];
 var cardWidth = 69,
     cardHeight = 101,
-    cardSpacing = 34.5;
+    cardSpacing = cardWidth/2.;
 
 // declare which room you want to join, and what your name is
 function enterRoom() {
@@ -32,10 +32,10 @@ function paintCards(cards) {
         let cardString = cards[i].id;
         
         // set the card to a png image
-        // let img = new Image(69,101);
+        
         let img = document.createElement('img');
-        img.width = 69;
-        img.height = 101;
+        img.width = cardWidth;
+        img.height = cardHeight;
         img.src = 'src/cards/' + cardString + '.png';
         
         // set the id of the image so it can be removed later
@@ -97,22 +97,22 @@ function initializeListeners() {
     socket.on('update-move', function(suits, suit, value, relPlayer) {
         
         var x,y;
-        var cardWidth = 69 * 2;
-        var cardHeight = 101 * 2;
+        var tableCardWidth = cardWidth * 1.5;
+        var tableCardHeight = cardHeight * 1.5;
         
         // determine the position of the card based on the player
         if (relPlayer == 0) {
-            x = canvas.width/2 - cardWidth/2;
-            y = ((canvas.height*3)/4) - cardHeight/2;
+            x = canvas.width/2 - tableCardWidth/2;
+            y = ((canvas.height*3)/4) - tableCardHeight/2;
         } else if (relPlayer == 1) {
-            x = canvas.width/4 - cardWidth/2;
-            y = canvas.height/2 - cardHeight/2;
+            x = canvas.width/4 - tableCardWidth/2;
+            y = canvas.height/2 - tableCardHeight/2;
         } else if (relPlayer == 2) {
-            x = canvas.width/2 - cardWidth/2;
-            y = canvas.height/4 - cardHeight/2;
+            x = canvas.width/2 - tableCardWidth/2;
+            y = canvas.height/4 - tableCardHeight/2;
         } else {
-            x = ((canvas.width * 3)/4) - cardWidth/2;
-            y = canvas.height/2 - cardHeight/2;
+            x = ((canvas.width * 3)/4) - tableCardWidth/2;
+            y = canvas.height/2 - tableCardHeight/2;
         }
         
         // get the card's image value
@@ -127,7 +127,7 @@ function initializeListeners() {
         
         // once the image loads, it will place the card on the screen
         img.addEventListener('load', function() {
-            context.drawImage(img, x, y, cardWidth, cardHeight);
+            context.drawImage(img, x, y, tableCardWidth, tableCardHeight);
         }, false); // no idea what the false means
     });
     
@@ -185,8 +185,8 @@ function initializeListeners() {
             } else {
                 let img = document.createElement('img');
                 img.src = cardString;
-                img.width = 69;
-                img.height = 101;
+                img.width = cardWidth;
+                img.height = cardHeight;
                 img.left = cardSpacing;
                 team1Tricks.appendChild(img);
             }
@@ -213,8 +213,8 @@ function initializeListeners() {
             } else {
                 let img = document.createElement('img');
                 img.src = cardString;
-                img.width = 69;
-                img.height = 101;
+                img.width = cardWidth;
+                img.height = cardHeight;
                 img.left = cardSpacing;
                 team2Tricks.appendChild(img);
             }
