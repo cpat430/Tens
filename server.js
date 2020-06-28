@@ -27,6 +27,9 @@ function initializeExpress() {
         response.sendFile(path.join(__dirname, 'game.html'), {roomid: request.query.roomid});
     });
 
+    app.get('/test', function (request, response) {
+        response.sendFile(path.join(__dirname, 'test.html'));
+    });
     
     server.listen(PORT, function () {
         console.log('Starting server on port 5000');
@@ -114,7 +117,7 @@ io.on('connection', function (socket) {
                 if (currentTurn === 3) {
                     // take the winner and update their scoreboard
                     for (let i = 0; i < 4; i++) {
-                        sockets[i].emit('update-scoreboard', gameOver, tens, winner);
+                        room_sockets.get(_roomid)[i].emit('update-scoreboard', gameOver, tens, winner);
                     }
                 }
                 
@@ -134,6 +137,9 @@ io.on('connection', function (socket) {
                 }
                 
                 socket.emit('valid', currentCard, id);
+
+                // redraw the hand.
+                sockets[id].emit('redraw-hand', curPlayerHand);
                 
                 room_sockets.get(_roomid)[prevturn].emit('offturn');
                 room_sockets.get(_roomid)[game.turn].emit('onturn');            

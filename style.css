@@ -1,3 +1,70 @@
+html * {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+#header {
+    height: 7%;
+}
+
+#header div {
+    text-align: center;
+    width: 33%;
+    float:left;
+    top: 0;
+}
+
+#header #menu-div {
+    text-align: left;
+}
+
+#header #sidenav-div {
+    text-align: right;
+}
+
+#room-code-div {
+    text-align: center;
+}
+
+#gameplay {
+    /* background-color: yellow; */
+    position: absolute;
+    height: 80%;
+    width: 100%;
+    text-align: center;
+    /* float: left; */
+}
+
+#gameplay #team1-scores {
+    position: relative;
+    float: left;
+    width: 25%;
+    text-align: center;
+}
+
+#gameplay #team2-scores {
+    position: relative;
+    float: left;
+    width: 25%;
+    text-align: center;
+}
+
+#gameplay #game-board {
+    position: relative;
+    float: left;
+    width: 50%;
+    text-align: center;
+}
+
+#hand {
+    position: relative;
+    left: 50%;
+    margin-left: -34%;
+}
+
+.name {
+    position: relative;
+}
+
 #scoreboard {
     position: absolute;
     right: 100px;
@@ -59,6 +126,58 @@
     font-size: 40px;
 }
 
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+  
+/* Modal Content/Box */
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 0px 30px 50px 30px;
+    border: 1px solid #888;
+    width: 30%; /* Could be more or less, depending on screen size */
+    text-align: center;
+}
+
+.modal-button {
+    color: black;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+/* The Close Button */
+#quit {
+    float: right;
+}
+
+#ready {
+    float: left;
+    background-color: red;
+}
+
+
+.modal-button:hover,
+.modal-button:focus {
+    color: grey;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+canvas {
+    background-color: lightgreen;
+}
+
 h1 {
     text-align: center;
     margin: 10px 0px;
@@ -67,6 +186,9 @@ h1 {
 h2 {
     font-size: 20px;
     font-weight: normal;
+    margin-block-start: 0.5em;
+    margin-block-end: 0.5em;
+    
 }
 
 span {

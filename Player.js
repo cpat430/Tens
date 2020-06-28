@@ -3,7 +3,7 @@ module.exports = class Player {
         this.position = position;
         this.hand = [];
         this.tricks = [];
-        this.tens = 0;
+        this.tens = [];
         this.num_suits = [0,0,0,0];
     }
 
@@ -32,12 +32,12 @@ module.exports = class Player {
 
     check_win(partner) {
 
-        console.log('Tens: ' + (this.tens + partner.tens));
+        console.log('Tens: ' + (this.tens.length + partner.tens.length));
         console.log('Tricks: ' + (this.tricks.length + partner.tricks.length));
 
-        if ((this.tens + partner.tens) > 2) {
+        if ((this.tens.length + partner.tens.length) > 2) {
             return true;
-        } else if ((this.tens + partner.tens) == 2 && (this.tricks.length + partner.tricks.length) >= 7) {
+        } else if ((this.tens.length + partner.tens.length) == 2 && (this.tricks.length + partner.tricks.length) >= 7) {
             return true;
         } else {
             return false;
