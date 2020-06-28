@@ -1,8 +1,10 @@
+var suits = ['S', 'C', 'D', 'H'];
+
 module.exports = class Card {
     constructor(suit, value) {
         this.suit = suit;
         this.value = value;
-        this.id = suit.toString() + value.toString();
+        this.id = suits[suit] + value.toString();
     }
 
     toString() { // need this for readline-synd

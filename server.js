@@ -77,7 +77,7 @@ io.on('connection', function (socket) {
         
         console.log("This is ID " + id);  
         socket.emit('init', id);
-        socket.emit('initialiseHand', game.players[id].hand, suits);
+        socket.emit('initialiseHand', game.players[id].hand);
         
         if (id === 0) {
             socket.emit('onturn');
