@@ -135,11 +135,9 @@ io.on('connection', function (socket) {
                     let relPlayer = (id - i + 4) % 4;
                     room_sockets.get(_roomid)[i].emit('update-move', suits, currentCard.suit, currentCard.value, relPlayer);
                 }
-                
-                socket.emit('valid', currentCard, id);
-
+               
                 // redraw the hand.
-                sockets[id].emit('redraw-hand', curPlayerHand);
+                socket.emit('redraw-hand', curPlayerHand);
                 
                 room_sockets.get(_roomid)[prevturn].emit('offturn');
                 room_sockets.get(_roomid)[game.turn].emit('onturn');            

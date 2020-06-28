@@ -27,6 +27,10 @@ function initializeCanvas() {
 
 function paintCards(cards) {
     hand.innerHTML = "";
+    let outerwidth = document.getElementById("game-board").offsetWidth;
+    let totalwidth = cardWidth + (cards.length - 1) * cardSpacing;
+    let offset = (outerwidth - totalwidth) / 2;
+
     for (let i = 0; i < cards.length; i++) {
             
         let cardString = cards[i].id;
@@ -47,7 +51,8 @@ function paintCards(cards) {
         // img.style.alignContent = "space-between 10px";
         img.style.position = "absolute";
         // img.style.left = "20px";
-        img.style.left = ((i+1) * (cardWidth - cardSpacing) - cardSpacing) + 'px';
+
+        img.style.left = (offset + (i+1) * (cardWidth - cardSpacing) - cardSpacing) + 'px';
 
         img.onclick = function() {
             // play the card that is clicked if it is valid
