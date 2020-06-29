@@ -1,10 +1,10 @@
 <html>
-  <head>
+<head>
     <title>Tens</title>    
     <script src="/socket.io/socket.io.js"></script>
     <link rel="stylesheet" href="style.css">
-  </head>
-  <body>
+</head>
+<body>
     <div id='header'>
         <div id='menu-div'>
             <a href="/">to menu</a>
@@ -16,62 +16,66 @@
             <a href="/">side navigation</a>
         </div>
     </div>
-
+    
     <button id="open-modal-button">Open Modal</button> 
-
+    
     <!-- The Modal -->
     <div id="game-over-modal" class="modal">
-
+        
         <!-- Modal content -->
         <div class="modal-content">
-            <!-- <span class="close">&times;</span>
+        
             <p>Some text in the Modal..</p> -->
-
+            
             <p>Ready to play the next game?</p>
-
+            
             <!-- button to be ready or quit -->
             <button id='ready' class='modal-button'>Ready?</button>
             <button id='quit' class='modal-button'>Quit Game?</button>
         </div>
-    
+        
     </div>
     
-    <div id='room-code-div'>
-        <h2>Room Code: <b id='room-code'>XXXXX</b></h2>
-
-    </div>
-
+    
+    
+    <div>
     <div id='gameplay'>
+        <div id='room-code-div'>
+            <h2>Room Code: <b id='room-code'>XXXXX</b></h2>
+            
+        </div>
         <div id='team1-scores'>
             <h3>Team1</h3>
             <h3>Score: <span id='team1-total-score'>0</span></h3>
-            <div id='team1-current-tricks'>
+            <div id='team1-tens'></div>
+            <div id='team1-tricks'>
                 
             </div>
         </div>
-
+        
         <div id='game-board'>
             <canvas id="canvas">
-
+                
             </canvas>
-
+            
             <div>
                 <p class='name'>Lachie</p>
             </div>
-
+            
             <div id='hand'>
                 
             </div>    
         </div>
-
+        
         <div id='team2-scores'>
             <h3>Team2</h3>
             <h3>Score: <span id='team2-total-score'>0</span></h3>
-            <div id='team2-current-tricks'>
-                
-            </div>
+            <div id='team2-tens'></div>
+            <div id='team2-tricks'></div>
         </div>
     </div>
-  </body>
-  <script src="/static/client.js"></script>
+    </div>
+</body>
+<script src="/static/client.js"></script>
 </html>
+    

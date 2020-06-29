@@ -8,7 +8,8 @@ var suits = ['S', 'C', 'D', 'H'];
 var cardWidth = 90,
     cardHeight = cardWidth * 1.5,
     cardSpacing = cardWidth/2.,
-    tableFactor = 1.1; // how many times larger does it appear on the table
+    tableFactor = 1.1, // how many times larger does it appear on the table
+    scoreBoardFactor = 0.5;
 
 // declare which room you want to join, and what your name is
 function enterRoom() {
@@ -23,8 +24,8 @@ function enterRoom() {
 
 function initializeCanvas() {
 
-    canvas.width = 500;
-    canvas.height = 500;
+    canvas.width = 550;
+    canvas.height = 550;
     canvas.style.border = "2px solid";
 }
 
@@ -79,6 +80,24 @@ function initialiseScoreboard() {
     // leaderboard.height = 300;
     // leaderboard.style.border = "2px solid";
     
+}
+
+function addCardToDiv(div, cardName) {
+    let img = new Image(cardWidth * scoreBoardFactor, cardHeight * scoreBoardFactor);
+    img.src = 'src/cards/' + cardName + '.png';
+    img.style.margin = "5px";
+
+    div.appendChild(img);
+}
+
+function addTrickToScoreboard(team) {
+    let teamTricks = document.getElementById(team + '-tricks');
+    addCardToDiv(teamTricks, 'Back');
+}
+
+function addTenToScoreboard(team, ten) {
+    let teamTens = document.getElementById(team + '-tens');
+    addCardToDiv(teamTens, ten.id);
 }
 
 function initializeListeners() {
@@ -153,19 +172,15 @@ function initializeListeners() {
         console.log(gameOver, tens, winner);
         
         if (winner == 1) {
-            let team1Tricks = document.getElementById('team1-tricks');
-            let team1Tens = document.getElementById('team1-tens');
-            
-            team1Tricks.innerHTML++;
-            team1Tens.innerHTML = eval(team1Tens.innerHTML) + eval(tens);
-            
+            addTrickToScoreboard("team1");
+            for (let i = 0; i < tens.length; i++) {
+                addTenToScoreboard("team1", tens[i]);
+            }
         } else {
-            let team2Tricks = document.getElementById('team2-tricks');
-            let team2Tens = document.getElementById('team2-tens');
-            
-            team2Tricks.innerHTML++;
-            team2Tens.innerHTML = eval(team2Tens.innerHTML) + eval(tens);
-
+            addTrickToScoreboard("team2");
+            for (let i = 0; i < tens.length; i++) {
+                addTenToScoreboard("team2", tens[i]);
+            }
         }
 
     });
