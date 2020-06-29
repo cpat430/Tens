@@ -4,7 +4,7 @@ var canvas = document.getElementById('canvas');
 var scoreboard = document.getElementById('scoreboard');
 var hand = document.getElementById('hand');
 var id = -1; // current player id
-var suits = ['S', 'C', 'D', 'H'];
+var suits = ['S', 'D', 'C', 'H'];
 var cardWidth = 90,
     cardHeight = cardWidth * 1.5,
     cardSpacing = cardWidth/2.,
@@ -126,7 +126,7 @@ function initializeListeners() {
         alert("Invalid move, please choose a different card");
     });
     
-    socket.on('update-move', function(suits, suit, value, relPlayer) {
+    socket.on('update-move', function(suit, value, relPlayer) {
         
         var x,y;
         var tableCardWidth = cardWidth * tableFactor;

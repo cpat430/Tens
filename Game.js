@@ -4,7 +4,7 @@ let Player = require('./Player.js');
 let Trick = require('./Trick.js');
 
 // create the suits and the card values to create a deck of cards
-let suits = ['S', 'C', 'D', 'H'];
+let suits = ['S', 'D', 'C', 'H'];
 let values = [2,3,4,5,6,7,8,9,10,11,12,13,14];
 const num_players = 4;
 const max_score = 13;

@@ -45,7 +45,7 @@ let player_names = new Map(); // roomid -> four players
 
 let sockets = [];
 
-let suits = ["S", "C", "D", "H"];
+let suits = ["S", "D", "C", "H"];
 let currentTurn = 0;
 
 // everything is initialised here
@@ -133,7 +133,7 @@ io.on('connection', function (socket) {
                 
                 for (let i = 0; i < room_sockets.get(_roomid).length; i++) {
                     let relPlayer = (id - i + 4) % 4;
-                    room_sockets.get(_roomid)[i].emit('update-move', suits, currentCard.suit, currentCard.value, relPlayer);
+                    room_sockets.get(_roomid)[i].emit('update-move', currentCard.suit, currentCard.value, relPlayer);
                 }
                
                 // redraw the hand.

@@ -1,5 +1,3 @@
-
-
 module.exports = class Trick {
     constructor(trump) {
         this.cards = [];

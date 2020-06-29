@@ -49,7 +49,6 @@ socket.on('roomExistResult', function(res) {
 
 input.oninput = function() {
     checkRoomExist(input.value);
-    
 }
 
 function getRandomCode() {
