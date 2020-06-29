@@ -75,13 +75,6 @@ function paintCards(cards) {
     }
 }
 
-function initialiseScoreboard() {
-    // leaderboard.width = 400;
-    // leaderboard.height = 300;
-    // leaderboard.style.border = "2px solid";
-    
-}
-
 function addCardToDiv(div, cardName) {
     let img = new Image(cardWidth * scoreBoardFactor, cardHeight * scoreBoardFactor);
     img.src = 'src/cards/' + cardName + '.png';
@@ -182,7 +175,6 @@ function initializeListeners() {
                 addTenToScoreboard("team2", tens[i]);
             }
         }
-
     });
 
     socket.on('redraw-hand', function(curHand) {
@@ -319,9 +311,7 @@ function initialiseModal() {
 
 enterRoom();
 initializeCanvas();
-initialiseScoreboard();
 initializeListeners();
-initializePlayer();
 initialiseModal();
 updateName("Yoohoo");
 
