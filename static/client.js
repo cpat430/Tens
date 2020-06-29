@@ -5,9 +5,10 @@ var scoreboard = document.getElementById('scoreboard');
 var hand = document.getElementById('hand');
 var id = -1; // current player id
 var suits = ['S', 'C', 'D', 'H'];
-var cardWidth = 69,
-    cardHeight = 101,
-    cardSpacing = cardWidth/2.;
+var cardWidth = 90,
+    cardHeight = cardWidth * 1.5,
+    cardSpacing = cardWidth/2.,
+    tableFactor = 1.1; // how many times larger does it appear on the table
 
 // declare which room you want to join, and what your name is
 function enterRoom() {
@@ -16,6 +17,8 @@ function enterRoom() {
     let room = urlParams.get("roomid");
     let pos = urlParams.get("pos");
     socket.emit('new player', room, pos);
+
+    document.getElementById("room-code").innerHTML = room;
 }
 
 function initializeCanvas() {
@@ -27,6 +30,7 @@ function initializeCanvas() {
 
 function paintCards(cards) {
     hand.innerHTML = "";
+    hand.style.height = cardHeight;
     let outerwidth = document.getElementById("game-board").offsetWidth;
     let totalwidth = cardWidth + (cards.length - 1) * cardSpacing;
     let offset = (outerwidth - totalwidth) / 2;
@@ -53,6 +57,12 @@ function paintCards(cards) {
         // img.style.left = "20px";
 
         img.style.left = (offset + (i+1) * (cardWidth - cardSpacing) - cardSpacing) + 'px';
+        img.onmouseover = function() {
+            img.style.bottom = 5;
+        };
+        img.onmouseleave = function() {
+            img.style.bottom = 0;
+        }
 
         img.onclick = function() {
             // play the card that is clicked if it is valid
@@ -74,8 +84,6 @@ function initialiseScoreboard() {
 function initializeListeners() {
     // called on initialising the player
     socket.on('init', function(state) {
-        let paragraph = document.getElementById('state');
-        paragraph.innerHTML = "You are person " + state;
         id = state;
     });
     
@@ -84,11 +92,11 @@ function initializeListeners() {
     });
     
     socket.on('onturn', function() {
-        document.getElementById('turn').innerHTML="On Turn";
+        // document.getElementById('turn').innerHTML="On Turn";
     });
     
     socket.on('offturn', function() {
-        document.getElementById('turn').innerHTML="Off Turn";
+        // document.getElementById('turn').innerHTML="Off Turn";
     });
     
     socket.on('valid', function(card, player) {
@@ -102,8 +110,8 @@ function initializeListeners() {
     socket.on('update-move', function(suits, suit, value, relPlayer) {
         
         var x,y;
-        var tableCardWidth = cardWidth * 1.5;
-        var tableCardHeight = cardHeight * 1.5;
+        var tableCardWidth = cardWidth * tableFactor;
+        var tableCardHeight = cardHeight * tableFactor;
         
         // determine the position of the card based on the player
         if (relPlayer == 0) {

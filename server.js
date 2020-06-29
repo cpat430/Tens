@@ -156,7 +156,6 @@ io.on('connection', function (socket) {
                 }
 
             } else {
-                // game.turn--; // undo the game turn added from the method
                 room_sockets.get(_roomid)[prevturn].emit('invalid');
             }
         }

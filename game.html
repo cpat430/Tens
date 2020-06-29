@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Tens!!</title>    
+    <title>Tens</title>    
     <script src="/socket.io/socket.io.js"></script>
     <link rel="stylesheet" href="style.css">
   </head>
@@ -37,7 +37,8 @@
     </div>
     
     <div id='room-code-div'>
-        <h2>Room Code: <span id='room-code'>XXXXX</span></h2>
+        <h2>Room Code: <b id='room-code'>XXXXX</b></h2>
+
     </div>
 
     <div id='gameplay'>
@@ -50,12 +51,6 @@
         </div>
 
         <div id='game-board'>
-            <p id='state'>
-
-            </p>
-            <p id='turn'>
-
-            </p>
             <canvas id="canvas">
 
             </canvas>
