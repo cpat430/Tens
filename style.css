@@ -12,6 +12,10 @@
     font-family: Baloo-Regular;
 }
 
+.background {
+    background-color: #EFF7F6;
+}
+
 #header {
     height: 7%;
 }
@@ -275,7 +279,7 @@ span {
     background-color: #dddddd;
     height: 200px;
     width: 90%;
-    
+
     margin: 10px;
     padding: 10px;
     

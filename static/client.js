@@ -26,7 +26,7 @@ function initializeCanvas() {
 
     canvas.width = 550;
     canvas.height = 550;
-    canvas.style.border = "2px solid";
+    canvas.style.borderRadius = "15px";
 }
 
 function paintCards(cards) {
