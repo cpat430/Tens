@@ -139,8 +139,12 @@ io.on('connection', function (socket) {
                 // redraw the hand.
                 socket.emit('redraw-hand', curPlayerHand);
                 
-                room_sockets.get(_roomid)[prevturn].emit('offturn');
-                room_sockets.get(_roomid)[game.turn].emit('onturn');            
+                try {
+                    room_sockets.get(_roomid)[prevturn].emit('offturn');
+                    room_sockets.get(_roomid)[game.turn].emit('onturn'); 
+                } catch (e) {
+                    console.log("Some window isn't open");
+                }           
                 
                 currentTurn++;  
                 
