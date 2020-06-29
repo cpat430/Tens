@@ -41,7 +41,7 @@ function initializeExpress() {
 let all_games = new Map(); // roomid -> 'Game' objects
 let player_counter = new Map(); // roomid -> player count
 let room_sockets = new Map(); // roomid -> socket Array
-let player_names = new Map();
+let player_names = new Map(); // roomid -> four players
 
 let sockets = [];
 
