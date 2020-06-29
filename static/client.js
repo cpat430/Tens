@@ -338,3 +338,5 @@ updateName("Yoohoo");
 //         property.className = "red";
 //     }
 // }
+
+addTrickToScoreboard('team1');

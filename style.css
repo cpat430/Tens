@@ -36,7 +36,6 @@
 }
 
 #gameplay {
-    background-color: yellow;
     height: 80%;
     width: 70%;
     text-align: center;
@@ -270,4 +269,16 @@ span {
 }
 .cell:nth-child(3n) {
     background-color: #F00;
+}
+
+.cardholder {
+    background-color: #dddddd;
+    height: 200px;
+    width: 90%;
+    
+    margin: 10px;
+    padding: 10px;
+    
+    border-radius: 10px;
+    display: inline-block;
 }
