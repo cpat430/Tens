@@ -307,3 +307,11 @@ span {
     top: -10px;
     box-shadow: 0px 10px 10px;
 }
+
+#name0 {
+
+}
+
+#name0:focus {
+    outline: 0;
+}

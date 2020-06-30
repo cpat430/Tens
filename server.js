@@ -195,6 +195,20 @@ io.on('connection', function (socket) {
             }
             
         }
+    });
+
+    socket.on('changeName', function(name) {
+        player_names.get(_roomid)[id] = name;
+
+        for (let i = 0; i < room_sockets.get(_roomid).length; i++) {
+            if (i == id) continue;
+            
+            let thissocket = room_sockets.get(_roomid)[i];
+
+            if (thissocket) {
+                thissocket.emit('updateName', (id - i + 4) % 4, name);
+            }
+        }
     })
 });
 

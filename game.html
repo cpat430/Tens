@@ -43,60 +43,77 @@
     </div>
     
     <div>
-    <div id='gameplay'>
-        <div id='room-code-div'>
-            <h2>Room Code: <b id='room-code'>XXXXX</b></h2>
-            
-        </div>
-        <div id='team1-scores'>
-            <h3>Team1</h3>
-            <h3>Score: <span id='team1-total-score'>0</span></h3>
-            <div class='cardholder'>
-                <b>Tens</b>
-                <div id='team1-tens'>
-                    
-                </div>
-            </div>
-            <div class='cardholder'>
-                <b>Tricks</b>
-                <div id='team1-tricks'>
-                    
-                </div>
-            </div>
-        </div>
-        
-        <div id='game-board'>
-            <canvas id="canvas">
+        <div id='gameplay'>
+            <div id='room-code-div'>
+                <h2>Room Code: <b id='room-code'>XXXXX</b></h2>
                 
-            </canvas>
-
-            <br>
-            <br>
+            </div>
+            <div id='team1-scores'>
+                <h3>Team1</h3>
+                <h3>Score: <span id='team1-total-score'>0</span></h3>
+                <div class='cardholder'>
+                    <b>Tens</b>
+                    <div id='team1-tens'>
+                        
+                    </div>
+                </div>
+                <div class='cardholder'>
+                    <b>Tricks</b>
+                    <div id='team1-tricks'>
+                        
+                    </div>
+                </div>
+            </div>
             
-            <div id='hand'>
-                
-            </div>    
-        </div>
-        
-        <div id='team2-scores'>
-            <h3>Team2</h3>
-            <h3>Score: <span id='team2-total-score'>0</span></h3>
-            <div class='cardholder'>
-                <b>Tens</b>
-                <div id='team2-tens'>
+            <div id='game-board'>
+                <div>
+                    <p id='name2'>hello</p>
+                </div>
+                <div style='display:inline-block' >
+                    <div style='float: left;'>
+                       <p id='name1'>hello</p>
+                    </div>
+                    <div style='float: left;'>
+                        <canvas style='width:550px; height:550px' id="canvas">
+                            
+                        </canvas>
+                    </div>
+                    <div style='float: left;'>
+                        <p id='name3'>hello</p>
+                    </div>
+                </div>
+
+                <div>
+                    <p contenteditable='true' id='name0'></p>
                     
                 </div>
+                
+                <br>
+                <br>
+                
+                <div id='hand'>
+                    
+                </div>    
             </div>
-            <div class='cardholder'>
-                <b>Tricks</b>
-                <div id='team2-tricks'>
-
+            
+            <div id='team2-scores'>
+                <h3>Team2</h3>
+                <h3>Score: <span id='team2-total-score'>0</span></h3>
+                <div class='cardholder'>
+                    <b>Tens</b>
+                    <div id='team2-tens'>
+                        
+                    </div>
+                </div>
+                <div class='cardholder'>
+                    <b>Tricks</b>
+                    <div id='team2-tricks'>
+                        
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
 </body>
 <script src="/static/client.js"></script>
 </html>
-    

@@ -273,7 +273,11 @@ function initializeListeners() {
         deleteAllFromDiv(document.getElementById('team2-tens'));
         deleteAllFromDiv(document.getElementById('team1-tricks'));
         deleteAllFromDiv(document.getElementById('team2-tricks'));
-    }) 
+    });
+
+    socket.on('updateName', function(relPos, name) {
+        let p = document.getElementById('name' + relPos).innerHTML = name;
+    })
 }
 
 // handles clicking as a turn
@@ -335,9 +339,9 @@ function closeNav() {
 enterRoom();
 initializeCanvas();
 initializeListeners();
-initialiseIcons();
-initialiseModal();
-updateName("Yoohoo");
+// initialiseIcons();
+// initialiseModal();
+// updateName("Yoohoo");
 closeNav();
 
 // function toggle_button(btnId) {
@@ -373,4 +377,16 @@ function newGame() {
     
 
     closeGameOverModal();
+}
+
+
+function changeName(name) {
+    socket.emit('changeName', name);
+}
+
+let pname = document.getElementById('name0');
+console.log(pname);
+pname.onkeyup = function(e) {
+    changeName(pname.innerHTML);
+    console.log(e);
 }
