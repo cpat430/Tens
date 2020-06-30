@@ -29,6 +29,21 @@ function initializeCanvas() {
     canvas.width = 550;
     canvas.height = 550;
     canvas.style.borderRadius = "15px";
+
+    // let arrow = document.createElement('img');
+    // arrow.src = 'src/icons/arrow.png';
+    // arrow.width = '30px';
+    // arrow.height = '30px';
+
+    // var context = canvas.getContext("2d");
+
+    // let x = canvas.width / 2;
+    // let y = (canvas.height / 4) * 3;
+
+    // // draw the arrow on the board for player 0
+    // context.drawImage(arrow, x, y);
+
+    // console.log('image drawn');
 }
 
 function paintCards(cards) {
@@ -128,24 +143,28 @@ function initializeListeners() {
     
     socket.on('update-move', function(suit, value, relPlayer) {
         
-        var x,y;
-        var tableCardWidth = cardWidth * tableFactor;
-        var tableCardHeight = cardHeight * tableFactor;
+        let tableCardWidth = cardWidth * tableFactor;
+        let tableCardHeight = cardHeight * tableFactor;
         
         // determine the position of the card based on the player
-        if (relPlayer == 0) {
-            x = canvas.width/2 - tableCardWidth/2;
-            y = ((canvas.height*3)/4) - tableCardHeight/2;
-        } else if (relPlayer == 1) {
-            x = canvas.width/4 - tableCardWidth/2;
-            y = canvas.height/2 - tableCardHeight/2;
-        } else if (relPlayer == 2) {
-            x = canvas.width/2 - tableCardWidth/2;
-            y = canvas.height/4 - tableCardHeight/2;
-        } else {
-            x = ((canvas.width * 3)/4) - tableCardWidth/2;
-            y = canvas.height/2 - tableCardHeight/2;
-        }
+        // if (relPlayer == 0) {
+        //     x = canvas.width/2 - tableCardWidth/2;
+        //     y = ((canvas.height*3)/4) - tableCardHeight/2;
+        // } else if (relPlayer == 1) {
+        //     x = canvas.width/4 - tableCardWidth/2;
+        //     y = canvas.height/2 - tableCardHeight/2;
+        // } else if (relPlayer == 2) {
+        //     x = canvas.width/2 - tableCardWidth/2;
+        //     y = canvas.height/4 - tableCardHeight/2;
+        // } else {
+        //     x = ((canvas.width * 3)/4) - tableCardWidth/2;
+        //     y = canvas.height/2 - tableCardHeight/2;
+        // }
+
+        let {x,y} = calculatePlayer(relPlayer);
+        x -= tableCardWidth/2;
+        y -= tableCardHeight/2;
+
         
         // get the card's image value
         let cValue = suits[suit].toString() + value.toString();
@@ -159,7 +178,14 @@ function initializeListeners() {
         
         // once the image loads, it will place the card on the screen
         img.addEventListener('load', function() {
+            // draw the card on the board
             context.drawImage(img, x, y, tableCardWidth, tableCardHeight);
+            
+            // delete the arrow for the current player
+
+            // draw the arrow to the next person.
+
+
         }, false); // no idea what the false means
     });
     
@@ -274,6 +300,30 @@ function initializeListeners() {
         deleteAllFromDiv(document.getElementById('team1-tricks'));
         deleteAllFromDiv(document.getElementById('team2-tricks'));
     }) 
+}
+
+function calculatePlayer(player) {
+
+    let x,y;
+
+    if (player == 0) {
+        x = canvas.width/2;
+        y = ((canvas.height*3)/4);
+    } else if (player == 1) {
+        x = canvas.width/4;
+        y = canvas.height/2;
+    } else if (player == 2) {
+        x = canvas.width/2;
+        y = canvas.height/4;
+    } else {
+        x = ((canvas.width * 3)/4);
+        y = canvas.height/2;
+    }
+
+    return {
+        x,
+        y
+    };
 }
 
 // handles clicking as a turn
