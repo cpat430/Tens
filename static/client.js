@@ -267,22 +267,19 @@ function initializeListeners() {
     });
     
     socket.on('end-of-game', function(message) {
-        alert(message);
+        showGameOverModal();
     });
     
     socket.on('reset-canvas', function() {
-        
-        console.log('cleared');
         var context = canvas.getContext("2d");
-        
         context.clearRect(0, 0, canvas.width, canvas.height);
     });   
 
     socket.on('reset-tens-and-tricks', function() {
-        deleteAllFromDiv('team1-tens');
-        deleteAllFromDiv('team2-tens');
-        deleteAllFromDiv('team1-tricks');
-        deleteAllFromDiv('team2-tricks');
+        deleteAllFromDiv(document.getElementsByClassName('team1-tens'));
+        deleteAllFromDiv(document.getElementsByClassName('team2-tens'));
+        deleteAllFromDiv(document.getElementsByClassName('team1-tricks'));
+        deleteAllFromDiv(document.getElementsByClassName('team2-tricks'));
     }) 
 }
 
@@ -356,7 +353,6 @@ updateName("Yoohoo");
 //     }
 // }
 
-addTrickToScoreboard('team1');
 
 function showGameOverModal() {
     document.getElementById('game-over-modal').style.display='block';
