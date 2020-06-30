@@ -135,6 +135,8 @@ function initializeListeners() {
     });
     
     socket.on('update-move', function(suit, value, relPlayer) {
+
+        
         
         let tableCardWidth = cardWidth * tableFactor;
         let tableCardHeight = cardHeight * tableFactor;
@@ -158,6 +160,9 @@ function initializeListeners() {
             // draw the card on the board
             context.drawImage(img, x, y, tableCardWidth, tableCardHeight);
 
+            // draw the arrow for the next player
+            relPlayer = (relPlayer + 1) % 4;
+            
             // draw the arrow
             drawArrow(relPlayer);
 
