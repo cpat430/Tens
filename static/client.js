@@ -9,7 +9,9 @@ var cardWidth = 90,
     cardHeight = cardWidth * 1.5,
     cardSpacing = cardWidth/2.,
     tableFactor = 1.1, // how many times larger does it appear on the table
-    scoreBoardFactor = 0.5;
+    scoreBoardFactor = 0.5
+    arrowWidth = 30,
+    arrowHeight = 30;
 
 let room = '-1';
 
@@ -24,26 +26,15 @@ function enterRoom() {
     document.getElementById("room-code").innerHTML = room;
 }
 
+
 function initializeCanvas() {
 
     canvas.width = 550;
     canvas.height = 550;
     canvas.style.borderRadius = "15px";
 
-    // let arrow = document.createElement('img');
-    // arrow.src = 'src/icons/arrow.png';
-    // arrow.width = '30px';
-    // arrow.height = '30px';
-
-    // var context = canvas.getContext("2d");
-
-    // let x = canvas.width / 2;
-    // let y = (canvas.height / 4) * 3;
-
-    // // draw the arrow on the board for player 0
-    // context.drawImage(arrow, x, y);
-
-    // console.log('image drawn');
+    // console.log(id);
+    // drawArrow(id); // TODO: not have this hardcoded.
 }
 
 function paintCards(cards) {
@@ -119,6 +110,8 @@ function initializeListeners() {
     // called on initialising the player
     socket.on('init', function(state) {
         id = state;
+
+        drawArrow((4-id) % 4);
     });
     
     socket.on('table', function (cards) {
@@ -145,26 +138,10 @@ function initializeListeners() {
         
         let tableCardWidth = cardWidth * tableFactor;
         let tableCardHeight = cardHeight * tableFactor;
-        
-        // determine the position of the card based on the player
-        // if (relPlayer == 0) {
-        //     x = canvas.width/2 - tableCardWidth/2;
-        //     y = ((canvas.height*3)/4) - tableCardHeight/2;
-        // } else if (relPlayer == 1) {
-        //     x = canvas.width/4 - tableCardWidth/2;
-        //     y = canvas.height/2 - tableCardHeight/2;
-        // } else if (relPlayer == 2) {
-        //     x = canvas.width/2 - tableCardWidth/2;
-        //     y = canvas.height/4 - tableCardHeight/2;
-        // } else {
-        //     x = ((canvas.width * 3)/4) - tableCardWidth/2;
-        //     y = canvas.height/2 - tableCardHeight/2;
-        // }
 
         let {x,y} = calculatePlayer(relPlayer);
         x -= tableCardWidth/2;
         y -= tableCardHeight/2;
-
         
         // get the card's image value
         let cValue = suits[suit].toString() + value.toString();
@@ -180,11 +157,9 @@ function initializeListeners() {
         img.addEventListener('load', function() {
             // draw the card on the board
             context.drawImage(img, x, y, tableCardWidth, tableCardHeight);
-            
-            // delete the arrow for the current player
 
-            // draw the arrow to the next person.
-
+            // draw the arrow
+            drawArrow(relPlayer);
 
         }, false); // no idea what the false means
     });
@@ -370,6 +345,58 @@ function initialiseModal() {
     }
 }
 
+
+function drawArrow(pos) {
+    
+    let context = canvas.getContext("2d");
+    
+    let arrow = document.createElement('img');
+    arrow.src = 'src/icons/arrow' + pos + '.png';
+
+    let coords = calculateArrowPosition((pos + 3) % 4);
+    let old_x = coords.x,
+        old_y = coords.y;
+
+    coords = calculateArrowPosition(pos);
+    let cur_x = coords.x,
+        cur_y = coords.y;
+
+    // once the image loads, it will place the card on the screen
+    arrow.addEventListener('load', function() {
+
+        // delete the arrow for the current player
+        context.clearRect(old_x, old_y, arrowWidth, arrowHeight);
+        
+        // draw the arrow to the next person.
+        context.drawImage(arrow, cur_x, cur_y, arrowWidth, arrowHeight);
+
+    }, false); // no idea what the false means    
+}
+
+function calculateArrowPosition(pos) {
+    
+    let x = canvas.width/2;
+    let y = canvas.height/2;
+
+    if (pos == 0) {
+        y *= (15/8);
+    } else if (pos == 1) {
+        x *= (1/8);
+    } else if (pos == 2) {
+        y *= (1/8);
+    } else {
+        x *= (15/8);
+    }
+
+    x -= arrowWidth/2;
+    y -= arrowHeight/2;
+
+    return {
+        x,
+        y
+    };
+}
+
 function goToMenu() {
     location.href = '/';
 }
@@ -383,8 +410,8 @@ function closeNav() {
 }
 
 enterRoom();
-initializeCanvas();
 initializeListeners();
+initializeCanvas();
 initialiseIcons();
 initialiseModal();
 updateName("Yoohoo");
