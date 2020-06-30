@@ -309,11 +309,21 @@ function initialiseModal() {
     }
 }
 
+function openNav() {
+    document.getElementById("mySidenav").style.width = "20%";
+}
+
+function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+}
+
 enterRoom();
 initializeCanvas();
 initializeListeners();
+initialiseIcons();
 initialiseModal();
 updateName("Yoohoo");
+closeNav();
 
 // function toggle_button(btnId) {
 //     var cur_colour = document.getElementById(btnId).style.backgroundColor;
