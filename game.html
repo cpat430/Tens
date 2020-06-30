@@ -6,14 +6,22 @@
 </head>
 <body class="background">
     <div id='header'>
-        <div id='menu-div'>
+        <div id='menu-div' class='topnav'>
             <a href="/">to menu</a>
         </div>
-        <div id='title-div'>
+        <div id='title-div' class='topnav'>
             <h1>Tens</h1>
         </div>
-        <div id='sidenav-div'>
-            <a href="/">side navigation</a>
+        <div id='sidenav-div' class='topnav'>
+            <!-- <span id='sidenav-button' onclick='openNav();'>side navigation</span> -->
+            <img src='src/icons/Sidenav.png' id='sidenav-button' class='icon' onclick='openNav();'>
+            <div id='mySidenav' class='sidenav'>
+                <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+                <a href="#">About</a>
+                <a href="#">Services</a>
+                <a href="#">Leaderboards</a>
+                <a href="#">Restart Game</a>
+            </div>
         </div>
     </div>
     
@@ -34,8 +42,6 @@
         
     </div>
     
-    
-    
     <div>
     <div id='gameplay'>
         <div id='room-code-div'>
@@ -53,7 +59,7 @@
             </div>
             <div class='cardholder'>
                 <b>Tricks</b>
-                <div id='team2-tens'>
+                <div id='team1-tricks'>
                     
                 </div>
             </div>

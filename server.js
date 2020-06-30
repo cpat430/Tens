@@ -45,7 +45,7 @@ let player_names = new Map(); // roomid -> four players
 
 let sockets = [];
 
-let suits = ["S", "C", "D", "H"];
+let suits = ["S", "D", "C", "H"];
 let currentTurn = 0;
 
 // everything is initialised here
@@ -133,7 +133,7 @@ io.on('connection', function (socket) {
                 
                 for (let i = 0; i < room_sockets.get(_roomid).length; i++) {
                     let relPlayer = (id - i + 4) % 4;
-                    room_sockets.get(_roomid)[i].emit('update-move', suits, currentCard.suit, currentCard.value, relPlayer);
+                    room_sockets.get(_roomid)[i].emit('update-move', currentCard.suit, currentCard.value, relPlayer);
                 }
                
                 // redraw the hand.
@@ -187,10 +187,12 @@ io.on('connection', function (socket) {
         game = all_games.get(roomid);
         for (let i = 0; i < room_sockets.get(roomid).length; i++) {
             let thissocket = room_sockets.get(roomid)[i];
+
+            if (thissocket) {
             thissocket.emit('initialiseHand', game.players[i].hand);
             thissocket.emit('reset-canvas');
-            
-            room_sockets.get(roomid)[i].emit('initialiseHand', game.players[i].hand);
+            thissocket.emit('reset-tens-and-tricks');
+            }
             
         }
     })

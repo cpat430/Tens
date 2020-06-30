@@ -1,4 +1,4 @@
-var suits = ['S', 'C', 'D', 'H'];
+var suits = ['S', 'D', 'C', 'H'];
 
 module.exports = class Card {
     constructor(suit, value) {

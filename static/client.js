@@ -4,7 +4,7 @@ var canvas = document.getElementById('canvas');
 var scoreboard = document.getElementById('scoreboard');
 var hand = document.getElementById('hand');
 var id = -1; // current player id
-var suits = ['S', 'C', 'D', 'H'];
+var suits = ['S', 'D', 'C', 'H'];
 var cardWidth = 90,
     cardHeight = cardWidth * 1.5,
     cardSpacing = cardWidth/2.,
@@ -77,13 +77,6 @@ function paintCards(cards) {
     }
 }
 
-function initialiseScoreboard() {
-    // leaderboard.width = 400;
-    // leaderboard.height = 300;
-    // leaderboard.style.border = "2px solid";
-    
-}
-
 function addCardToDiv(div, cardName) {
     let img = new Image(cardWidth * scoreBoardFactor, cardHeight * scoreBoardFactor);
     img.src = 'src/cards/' + cardName + '.png';
@@ -104,6 +97,7 @@ function addTenToScoreboard(team, ten) {
 
 function deleteAllFromDiv(div) {
     div.innerHTML = "";
+    console.log(div);
 }
 
 function initializeListeners() {
@@ -132,7 +126,7 @@ function initializeListeners() {
         alert("Invalid move, please choose a different card");
     });
     
-    socket.on('update-move', function(suits, suit, value, relPlayer) {
+    socket.on('update-move', function(suit, value, relPlayer) {
         
         var x,y;
         var tableCardWidth = cardWidth * tableFactor;
@@ -188,7 +182,6 @@ function initializeListeners() {
                 addTenToScoreboard("team2", tens[i]);
             }
         }
-
     });
 
     socket.on('redraw-hand', function(curHand) {
@@ -276,10 +269,10 @@ function initializeListeners() {
     });   
 
     socket.on('reset-tens-and-tricks', function() {
-        deleteAllFromDiv(document.getElementsByClassName('team1-tens'));
-        deleteAllFromDiv(document.getElementsByClassName('team2-tens'));
-        deleteAllFromDiv(document.getElementsByClassName('team1-tricks'));
-        deleteAllFromDiv(document.getElementsByClassName('team2-tricks'));
+        deleteAllFromDiv(document.getElementById('team1-tens'));
+        deleteAllFromDiv(document.getElementById('team2-tens'));
+        deleteAllFromDiv(document.getElementById('team1-tricks'));
+        deleteAllFromDiv(document.getElementById('team2-tricks'));
     }) 
 }
 
@@ -331,13 +324,21 @@ function goToMenu() {
     location.href = '/';
 }
 
+function openNav() {
+    document.getElementById("mySidenav").style.width = "20%";
+}
+
+function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+}
+
 enterRoom();
 initializeCanvas();
-initialiseScoreboard();
 initializeListeners();
-initializePlayer();
+initialiseIcons();
 initialiseModal();
 updateName("Yoohoo");
+closeNav();
 
 // function toggle_button(btnId) {
 //     var cur_colour = document.getElementById(btnId).style.backgroundColor;
