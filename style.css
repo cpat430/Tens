@@ -126,48 +126,42 @@
 /* The Modal (background) */
 .modal {
     display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
   
 /* Modal Content/Box */
 .modal-content {
     background-color: #fefefe;
-    margin: 15% auto; /* 15% from the top and centered */
-    padding: 0px 30px 50px 30px;
-    border: 1px solid #888;
-    width: 30%; /* Could be more or less, depending on screen size */
+    width: 10%; /* Could be more or less, depending on screen size */
+    max-width: 20%;
     text-align: center;
 }
 
-.modal-button {
-    color: black;
-    font-size: 28px;
-    font-weight: bold;
+.game-over-button {
+    font-size: 15px;
+    border-width: 0;
+    border-radius: 5px;
+    width: 20%;
+    padding: 5px;
 }
 
 /* The Close Button */
 #quit {
-    float: right;
+    float: left;
+    background-color: #eeeeee;
+}
+
+#quit:hover {
+    background-color: #dddddd;
+    cursor: pointer;
 }
 
 #ready {
-    float: left;
-    background-color: red;
+    float: right;
+    background-color: lightgreen;
 }
 
-
-.modal-button:hover,
-.modal-button:focus {
-    color: grey;
-    text-decoration: none;
+#ready:hover {
+    background-color: #83E383;
     cursor: pointer;
 }
 

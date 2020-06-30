@@ -17,21 +17,19 @@
         </div>
     </div>
     
-    <button id="open-modal-button">Open Modal</button> 
+    <button id="open-modal-button" onclick='showGameOverModal();'>Open Modal</button> 
     
     <!-- The Modal -->
     <div id="game-over-modal" class="modal">
         
         <!-- Modal content -->
-        <div class="modal-content">
-        
-            <p>Some text in the Modal..</p> -->
-            
-            <p>Ready to play the next game?</p>
+        <div class="modal-content">            
+            <p>Ready to play a new hand?</p>
             
             <!-- button to be ready or quit -->
-            <button id='ready' class='modal-button'>Ready?</button>
-            <button id='quit' class='modal-button'>Quit Game?</button>
+            <button id='ready' class='game-over-button' onclick='newGame();'>Ready</button>
+            <button id='quit' class='game-over-button' onclick='goToMenu();'>Quit</button>
+            <br>
         </div>
         
     </div>

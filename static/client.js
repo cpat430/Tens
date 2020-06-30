@@ -11,11 +11,13 @@ var cardWidth = 90,
     tableFactor = 1.1, // how many times larger does it appear on the table
     scoreBoardFactor = 0.5;
 
+let room = '-1';
+
 // declare which room you want to join, and what your name is
 function enterRoom() {
     var urlParams = new URLSearchParams(window.location.search);
     
-    let room = urlParams.get("roomid");
+    room = urlParams.get("roomid");
     let pos = urlParams.get("pos");
     socket.emit('new player', room, pos);
 
@@ -98,6 +100,10 @@ function addTrickToScoreboard(team) {
 function addTenToScoreboard(team, ten) {
     let teamTens = document.getElementById(team + '-tens');
     addCardToDiv(teamTens, ten.id);
+}
+
+function deleteAllFromDiv(div) {
+    div.innerHTML = "";
 }
 
 function initializeListeners() {
@@ -271,6 +277,13 @@ function initializeListeners() {
         
         context.clearRect(0, 0, canvas.width, canvas.height);
     });   
+
+    socket.on('reset-tens-and-tricks', function() {
+        deleteAllFromDiv('team1-tens');
+        deleteAllFromDiv('team2-tens');
+        deleteAllFromDiv('team1-tricks');
+        deleteAllFromDiv('team2-tricks');
+    }) 
 }
 
 // handles clicking as a turn
@@ -317,6 +330,10 @@ function initialiseModal() {
     }
 }
 
+function goToMenu() {
+    location.href = '/';
+}
+
 enterRoom();
 initializeCanvas();
 initialiseScoreboard();
@@ -340,3 +357,23 @@ updateName("Yoohoo");
 // }
 
 addTrickToScoreboard('team1');
+
+function showGameOverModal() {
+    document.getElementById('game-over-modal').style.display='block';
+}
+
+function closeGameOverModal() {
+    document.getElementById('game-over-modal').style.display='none';
+}
+
+function newGame() {
+    // make new game object
+    socket.emit('newGame', room); // deals the hand here too
+    // clear table
+
+    // clear cards
+
+    
+
+    closeGameOverModal();
+}

@@ -181,6 +181,19 @@ io.on('connection', function (socket) {
     socket.on('roomExistQuery', function(roomid) {
         socket.emit('roomExistResult', player_names.get(roomid));
     });
+
+    socket.on('newGame', function(roomid) {
+        all_games.set(roomid, new Game());
+        game = all_games.get(roomid);
+        for (let i = 0; i < room_sockets.get(roomid).length; i++) {
+            let thissocket = room_sockets.get(roomid)[i];
+            thissocket.emit('initialiseHand', game.players[i].hand);
+            thissocket.emit('reset-canvas');
+            
+            room_sockets.get(roomid)[i].emit('initialiseHand', game.players[i].hand);
+            
+        }
+    })
 });
 
 initializeExpress();
