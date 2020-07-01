@@ -1,7 +1,6 @@
 module.exports = class Trick {
     constructor(trump) {
         this.cards = [];
-        this.tens = [];
         this.trump = trump;
     }
 
@@ -34,9 +33,7 @@ module.exports = class Trick {
             }
         }
 
-        console.log('tens', this.tens);
-
-        return winner;
+        return {winner, tens};
     }
 
     // the idea is that if the card follows trump suit, it has high value
