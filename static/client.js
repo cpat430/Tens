@@ -26,15 +26,22 @@ function enterRoom() {
     document.getElementById("room-code").innerHTML = room;
 }
 
-
 function initializeCanvas() {
 
     canvas.width = 550;
     canvas.height = 550;
     canvas.style.borderRadius = "15px";
+}
 
-    // console.log(id);
-    // drawArrow(id); // TODO: not have this hardcoded.
+function chooseTrump(trump) {
+
+    console.log('this is the trump number', trump);
+
+    socket.emit('update-trump', trump, this.id);
+
+    // close the modal and deal the rest of the hand.
+    let trumpModal = document.getElementById('choose-trump-modal');
+    trumpModal.style.display = 'none';
 }
 
 function paintCards(cards) {
@@ -125,6 +132,12 @@ function initializeListeners() {
     socket.on('offturn', function() {
         // document.getElementById('turn').innerHTML="Off Turn";
     });
+
+    socket.on('open-trump-modal', function() {
+        let modal = document.getElementById('choose-trump-modal');
+
+        modal.style.display = 'block';
+    });
     
     socket.on('valid', function(card, player) {
             // nothing happens
@@ -136,8 +149,6 @@ function initializeListeners() {
     
     socket.on('update-move', function(suit, value, relPlayer) {
 
-        
-        
         let tableCardWidth = cardWidth * tableFactor;
         let tableCardHeight = cardHeight * tableFactor;
 
@@ -162,7 +173,7 @@ function initializeListeners() {
 
             // draw the arrow for the next player
             relPlayer = (relPlayer + 1) % 4;
-            
+
             // draw the arrow
             drawArrow(relPlayer);
 
@@ -421,21 +432,6 @@ initialiseIcons();
 initialiseModal();
 updateName("Yoohoo");
 closeNav();
-
-// function toggle_button(btnId) {
-//     var cur_colour = document.getElementById(btnId).style.backgroundColor;
-
-//     console.log(document.getElementById(btnId).style.backgroundColor);
-
-//     var property = document.getElementById(btnId);
-
-//     if (cur_colour == "red") {
-//         property.style.backgroundColor = "green";
-//     } else {
-//         property.className = "red";
-//     }
-// }
-
 
 function showGameOverModal() {
     document.getElementById('game-over-modal').style.display='block';

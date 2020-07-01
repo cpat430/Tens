@@ -24,14 +24,22 @@ module.exports = class Game {
         this.p4 = new Player(4);
         this.players = [this.p1,this.p2,this.p3,this.p4];
 
-        this.trump = 0; // players[0].get_trump(); // TODO make it an option
-        // console.log('trump', this.trump);
+        this.trump = -1; // players[0].get_trump(); // TODO make it an option
+
+        this.p1.dealer = true;
+        
+        // deal 5 random cards to the first player to choose the trump
 
         // deal 13 cards each in players hands
         for (let p of this.players) {
-            this.deck.deal(p.hand, 13);
-            p.count_suits();
-            p.sortHand();
+            if (!p.dealer) {
+                // this.deck.deal(p.hand, 13);
+                this.deal_cards(p, 13);
+            } else {
+                this.deal_cards(p,5);
+            }
+            // p.count_suits();
+            // p.sortHand();
         }
         this.tricks = [];
         this.winning_player = 0;
@@ -39,6 +47,12 @@ module.exports = class Game {
 
         this.turn = 0;
         this.trick = null;
+    }
+
+    deal_cards(player, num) {
+        this.deck.deal(player.hand, num);
+        player.count_suits();
+        player.sortHand();
     }
     
     make_move(curSuit, index) {

@@ -28,8 +28,11 @@ module.exports = class Deck {
     }
 
     deal(hand, cards) {
+        
         while (hand.length < cards) {
-            hand.push(this.deck.pop());
+            let card = this.deck.pop();
+            
+            hand.push(card);
         }
     }
 }

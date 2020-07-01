@@ -5,25 +5,18 @@ module.exports = class Player {
         this.tricks = [];
         this.tens = [];
         this.num_suits = [0,0,0,0];
+        this.dealer = false;
     }
 
     get_trump() {
 
         // deal five cards to the first player
         this.hand = deck.deal(this.hand, 5);
-
-        // show the hand that they can choose the trump from
-        console.log(p1.hand);
-
-        // to ensure that a trump is chosen
-        let index = -1;
+        
+        // bring up a modal to choose a trump
+        
 
         // ensures one trump is chosen
-        while (index == -1) {
-            index = readline.keyInSelect(suits, 'Which suit?');
-        }
-
-        console.log('Ok, ' + suits[index] + ' is now the trump.\n');
 
         let trump = suits[index];
 

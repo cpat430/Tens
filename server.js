@@ -79,18 +79,24 @@ io.on('connection', function (socket) {
         socket.emit('init', id);
         socket.emit('initialiseHand', game.players[id].hand);
         
-        if (id === 0) {
+        if (id == 0) {
             socket.emit('onturn');
+            socket.emit('open-trump-modal');
         } else {
             socket.emit('offturn');
         }
     });
-    
-    // socket.on('made-move', function(card, player) {
-    //     for (let i = 0; i < 4; i++) {
-    //         socket.emit('update-move', card, player);
-    //     }
-    // }); 
+
+    socket.on('update-trump', function(trump, id) {
+
+        // set the trump
+        game.trump = trump;
+
+        // deal the rest of the player's hand
+        game.deal_cards(game.players[id], 13);
+
+        room_sockets.get(_roomid)[id].emit('redraw-hand', game.players[id].hand);
+    })
     
     socket.on('turn', function (cardId) {
         // update game state, only it the id is the right player
@@ -189,9 +195,9 @@ io.on('connection', function (socket) {
             let thissocket = room_sockets.get(roomid)[i];
 
             if (thissocket) {
-            thissocket.emit('initialiseHand', game.players[i].hand);
-            thissocket.emit('reset-canvas');
-            thissocket.emit('reset-tens-and-tricks');
+                thissocket.emit('initialiseHand', game.players[i].hand);
+                thissocket.emit('reset-canvas');
+                thissocket.emit('reset-tens-and-tricks');
             }
             
         }
