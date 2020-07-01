@@ -10,60 +10,48 @@ module.exports = class Trick {
     }
 
     // gets the winner assuming all cards played are valid
-    get_winner(first) {
+    // returns the index of the trick that has won
+    get_winner() {
         let cards = this.cards,
-            card,
-            suit,
             best = cards[0],
-            player = first,
-            num_players = 4;
-
-        suit = cards[0].suit;
+            winner = 0,
+            tens = [];
 
         if (cards[0].value == 10) {
-            this.tens.push(cards[0]);
+            tens.push(cards[0]);
         }
 
         for (let i = 1; i < cards.length; i++) {
-            card = cards[i];
+            let card = cards[i];
 
             if (card.value == 10) {
-                this.tens.push(card);
+                tens.push(card);
             }
-
-            // if the first card is not a trump
-            if (suit != this.trump) {
-                // we compare values to the first card
-                if (card.suit == suit) {
-                    if (card.value > best.value && best.suit != this.trump) {
-                        best = card;
-                        player = first + i;
-                    }
-                } else if (card.suit != suit && card.suit != this.trump) {
-                    continue;
-                } else {
-                    if (best.suit != this.trump) {
-                        best = card;
-                        player = first + i;
-                    } else if (card.value > best.value) {
-                        best = card;
-                        player = first + i;
-                    }
-                }
-            } else { // if the current card is a trump
-                if (card.suit == this.trump) {
-                    if (card.value > best.value) {
-                        best = card;
-                        player = first + i;
-                    }
-                }
+            
+            if (this.cardValue(cards[0].suit, this.trump, card) > this.cardValue(cards[0].suit, this.trump, best)) {
+                best = card;
+                winner = i;
             }
         }
 
         console.log('tens', this.tens);
 
-        return player % num_players;
+        return winner;
     }
+
+    // the idea is that if the card follows trump suit, it has high value
+    // if it follows startingSuit, it has normal value
+    // if it does not follow, it has 0 value
+    cardValue(startingSuit, trumpSuit, card) {
+        if (card.suit == trumpSuit) {
+            return 100 + card.value;
+        } else if (card.suit == startingSuit) {
+            return card.value;
+        } else {
+            return 0;
+        }
+    }
+
     toString() {
         let s = "";
         for (let i = 0; i < this.cards.length; i++) {

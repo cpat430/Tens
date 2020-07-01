@@ -75,7 +75,7 @@ module.exports = class Game {
 
         if (this.trick === null) {
             // create a new trick
-            this.trick = new Trick(card.get_suit()); // changed this
+            this.trick = new Trick(this.trump); // changed this
 
             // find the person who starts
             this.turn = this.winning_player;
@@ -114,7 +114,8 @@ module.exports = class Game {
         this.turn = (this.turn + 1) % 4;
 
         if (this.trick.cards.length == 4) {
-            this.winning_player = this.trick.get_winner(this.winning_player);
+            let winning_index = this.trick.get_winner();
+            this.winning_player = (this.winning_player + winning_index) % 4;
             console.log('Player ' + this.winning_player + ' won!');
 
             // add the trick to the winning players tricks and add the ten value
