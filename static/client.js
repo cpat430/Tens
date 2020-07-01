@@ -117,8 +117,10 @@ function initializeListeners() {
     // called on initialising the player
     socket.on('init', function(state) {
         id = state;
+    });
 
-        drawArrow((4-id) % 4);
+    socket.on('current-turn', function(pos) {
+        drawArrow((4 + pos - id) % 4);
     });
     
     socket.on('table', function (cards) {
@@ -161,12 +163,6 @@ function initializeListeners() {
         img.addEventListener('load', function() {
             // draw the card on the board
             context.drawImage(img, x, y, tableCardWidth, tableCardHeight);
-
-            // draw the arrow for the next player
-            relPlayer = (relPlayer + 1) % 4;
-
-            // draw the arrow
-            drawArrow(relPlayer);
 
         }, false); // no idea what the false means
     });
@@ -359,22 +355,18 @@ function drawArrow(pos) {
     let arrow = document.createElement('img');
     arrow.src = 'src/icons/arrow' + pos + '.png';
 
-    let coords = calculateArrowPosition((pos + 3) % 4);
-    let old_x = coords.x,
-        old_y = coords.y;
-
-    coords = calculateArrowPosition(pos);
-    let cur_x = coords.x,
-        cur_y = coords.y;
+    // first, clear all arrows. Arrows are not always before the current position
+    for (let i = 0; i < 4; i++) {
+        let coords = calculateArrowPosition(i);
+        context.clearRect(coords.x, coords.y, arrowWidth, arrowHeight);
+    }
+    
+    let {x, y} = calculateArrowPosition(pos);
 
     // once the image loads, it will place the card on the screen
-    arrow.addEventListener('load', function() {
-
-        // delete the arrow for the current player
-        context.clearRect(old_x, old_y, arrowWidth, arrowHeight);
-        
+    arrow.addEventListener('load', function() {        
         // draw the arrow to the next person.
-        context.drawImage(arrow, cur_x, cur_y, arrowWidth, arrowHeight);
+        context.drawImage(arrow, x, y, arrowWidth, arrowHeight);
 
     }, false); // no idea what the false means    
 }

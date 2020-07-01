@@ -62,6 +62,7 @@ io.on('connection', function (socket) {
         console.log("This is ID " + id);  
         socket.emit('init', id);
         socket.emit('initialiseHand', room.game.players[id].hand);
+        socket.emit('current-turn', room.game.turn);
         
         if (room.game.players[id].dealer) {
             socket.emit('open-trump-modal');
@@ -80,6 +81,8 @@ io.on('connection', function (socket) {
     })
     
     socket.on('turn', function (cardId) {
+        if (!room) return;
+
         console.log(cardId);
         // update game state, only it the id is the right player
         if (room.game.turn == id) {
@@ -132,6 +135,10 @@ io.on('connection', function (socket) {
 
             } else {
                 room.room_sockets[prevturn].emit('invalid');
+            }
+
+            for (let i = 0; i < 4; i++) {
+                room.room_sockets[i].emit('current-turn', room.game.turn);
             }
         }
     });
