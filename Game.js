@@ -44,7 +44,7 @@ module.exports = class Game {
             // p.sortHand();
         }
         this.tricks = [];
-        this.winning_player = 0;
+        this.winning_player = dealer;
         this.winning_partner = 2;
 
         this.trick = null;
@@ -56,7 +56,18 @@ module.exports = class Game {
         player.sortHand();
     }
     
-    make_move(curSuit, index) {
+    make_move(cardId) {
+        let ind = -1;
+        let card = null;
+        for (let i = 0; i < this.players[this.turn].hand.length; i++) {
+            if (this.players[this.turn].hand[i].id == cardId) {
+                ind = i;
+                card = this.players[this.turn].hand[i];
+                break;
+            }
+        }
+        if (ind == -1) throw "Bad";
+
         let works = true;
         let winner = -1;
         let tens = [];
@@ -64,7 +75,7 @@ module.exports = class Game {
 
         if (this.trick === null) {
             // create a new trick
-            this.trick = new Trick(this.trump);
+            this.trick = new Trick(card.get_suit()); // changed this
 
             // find the person who starts
             this.turn = this.winning_player;
@@ -75,7 +86,7 @@ module.exports = class Game {
         } else {
             // If it is not a new trick, check if it matches suit if possible
             // Check if the player has any of this suit left
-            if (this.players[this.turn].num_suits[this.trick.get_suit()] !== 0 && curSuit !== this.trick.get_suit()) {
+            if (this.players[this.turn].num_suits[this.trick.get_suit()] != 0 && card.get_suit() != this.trick.get_suit()) {
                 console.log("Absolutely illegal");
 
                 works = false;
@@ -89,15 +100,20 @@ module.exports = class Game {
         }       
 
         // save the card and remove it from the hand
-        let card = this.players[this.turn].hand.splice(index,1)[0];
+        
+        this.players[this.turn].hand.splice(ind,1)[0];
+        // the hand is the wrong hand - thats why the card is not being picked up
 
         this.players[this.turn].num_suits[card.get_suit()]--;
+
+        console.log(this.turn);
+        console.log(this.players[this.turn].hand);
 
         this.trick.cards.push(card);
 
         this.turn = (this.turn + 1) % 4;
 
-        if (this.trick.cards.length === 4) {
+        if (this.trick.cards.length == 4) {
             this.winning_player = this.trick.get_winner(this.winning_player);
             console.log('Player ' + this.winning_player + ' won!');
 

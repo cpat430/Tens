@@ -41,7 +41,6 @@ let rooms = new Map();
 let sockets = [];
 
 let suits = ["S", "D", "C", "H"];
-let currentTurn = 0;
 
 // everything is initialised here
 io.on('connection', function (socket) {
@@ -81,28 +80,16 @@ io.on('connection', function (socket) {
     })
     
     socket.on('turn', function (cardId) {
+        console.log(cardId);
         // update game state, only it the id is the right player
         if (room.game.turn == id) {
             let prevturn = room.game.turn;
-            var currentCard;
             
-            var curPlayerHand = room.game.players[id].hand;
-            let index = -1;
-            
-            // iterate through the players hand and see if the id is equal to the card id
-            for (let i = 0; i < curPlayerHand.length; i++) {
-                // console.log(curPlayerHand[i]);
-                if (curPlayerHand[i].id === cardId) {
-                    currentCard = curPlayerHand[i];
-                    index = i;
-                }
-            }
-            
-            let {works, winner, tens, gameOver} = room.game.make_move(currentCard.suit, index); // game turn increases after this
+            let {works, winner, tens, gameOver} = room.game.make_move(cardId); // game turn increases after this
 
             if (works) {
 
-                if (currentTurn === 3) {
+                if (room.currentTurn == 3) {
                     // take the winner and update their scoreboard
                     for (let i = 0; i < 4; i++) {
                         room.room_sockets[i].emit('update-scoreboard', gameOver, tens, winner);
@@ -110,22 +97,22 @@ io.on('connection', function (socket) {
                 }
                 
                 // if this is the last turn, remove on the next valid move.
-                if (currentTurn === 4) {
+                if (room.currentTurn == 4) {
                     // reset the canvas
                     for (let i = 0; i < 4; i++) {
                         room.room_sockets[i].emit('reset-canvas');
                     }
-                    currentTurn = 0;
+                    room.currentTurn = 0;
 
                 }
                 
                 for (let i = 0; i < 4; i++) {
                     let relPlayer = (id - i + 4) % 4;
-                    room.room_sockets[i].emit('update-move', currentCard.suit, currentCard.value, relPlayer);
+                    room.room_sockets[i].emit('update-move', cardId, relPlayer);
                 }
-               
+
                 // redraw the hand.
-                socket.emit('redraw-hand', curPlayerHand);
+                socket.emit('redraw-hand', room.game.players[id].hand);
                 
                 try {
                     room.room_sockets[prevturn].emit('offturn');
@@ -134,7 +121,7 @@ io.on('connection', function (socket) {
                     console.log("Some window isn't open");
                 }           
                 
-                currentTurn++;  
+                room.currentTurn++;  
                 
                 if (gameOver) {
                     
@@ -174,11 +161,9 @@ io.on('connection', function (socket) {
 
         // find dealer
 
-        let game = room.game;
+        let next_dealer = (room.game.dealer + 1) % 4;
 
-        let dealer = (game.current_dealer + 1) % 4;
-
-        room.newGame(dealer);
+        room.newGame(next_dealer);
 
         for (let i = 0; i < 4; i++) {
             let thissocket = room.room_sockets[i];
@@ -188,7 +173,7 @@ io.on('connection', function (socket) {
                 thissocket.emit('reset-canvas');
                 thissocket.emit('reset-tens-and-tricks');
 
-                if (game.players[i].dealer) {
+                if (room.game.players[i].dealer) {
                     thissocket.emit('open-trump-modal');
                 }
             }

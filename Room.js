@@ -7,6 +7,7 @@ module.exports = class Room {
         this.room_sockets = [null, null, null, null];
         this.player_names = ['', '', '', ''];
         this.roomid = roomid;
+        this.currentTurn = 0;
     }
 
     newGame(dealer) {

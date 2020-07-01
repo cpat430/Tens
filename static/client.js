@@ -139,7 +139,7 @@ function initializeListeners() {
         alert("Invalid move, please choose a different card");
     });
     
-    socket.on('update-move', function(suit, value, relPlayer) {
+    socket.on('update-move', function(cardId, relPlayer) {
 
         let tableCardWidth = cardWidth * tableFactor;
         let tableCardHeight = cardHeight * tableFactor;
@@ -149,11 +149,10 @@ function initializeListeners() {
         y -= tableCardHeight/2;
         
         // get the card's image value
-        let cValue = suits[suit].toString() + value.toString();
         
         // create a new image for the played card
         let img = new Image();
-        img.src = 'src/cards/' + cValue + '.png';
+        img.src = 'src/cards/' + cardId + '.png';
         
         // get the context of the canvas
         var context = canvas.getContext("2d");
