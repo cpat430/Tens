@@ -189,15 +189,15 @@ io.on('connection', function (socket) {
     });
 
     socket.on('changeName', function(name) {
-        player_names.get(_roomid)[id] = name;
+        if (!room) return;
+        
+        room.player_names[id] = name;
 
-        for (let i = 0; i < room_sockets.get(_roomid).length; i++) {
-            if (i == id) continue;
-            
-            let thissocket = room_sockets.get(_roomid)[i];
+        for (let i = 0; i < 4; i++) {            
+            let thissocket = room.room_sockets[i];
 
             if (thissocket) {
-                thissocket.emit('updateName', (id - i + 4) % 4, name);
+                thissocket.emit('updateName', id, name);
             }
         }
     })

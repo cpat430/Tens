@@ -14,8 +14,8 @@ var cardWidth = 90,
     scoreBoardFactor = 0.5
     arrowWidth = 30,
     arrowHeight = 30,
-    canvasDimension = 500,
-    canvasPadding = 50;
+    canvasDimension = 650,
+    canvasPadding = 100;
 
 let room = '-1';
 
@@ -296,8 +296,10 @@ function initializeListeners() {
         deleteAllFromDiv(document.getElementById('team2-tricks'));
     });
 
-    socket.on('updateName', function(relPos, name) {
-        let p = document.getElementById('name' + relPos).innerHTML = name;
+    socket.on('updateName', function(pos, name) {
+        let relPos = (pos - id + 4) % 4;
+
+        drawName(relPos, name);
     })
 }
 
@@ -399,12 +401,54 @@ function drawArrow(pos) {
     }, false); // no idea what the false means    
 }
 
+function drawName(pos, name) {
+    let {x,y} = calculateNamePosition(pos);
+
+    let context = canvas.getContext('2d');
+
+    let angle = pos == 1 ? -Math.PI/2 : pos == 3 ? Math.PI/2 : 0;
+
+    context.save();
+    context.translate(x, y);
+    context.rotate(angle);
+
+    let width = 500, height = canvasPadding/2;
+    let lineHeight = 15;
+
+    // draw rectangle under first
+    context.clearRect(-width/2, -height/2, width, height);
+
+    context.font = "25px Baloo-Regular";
+    context.textAlign = "center";
+    context.fillStyle = 'black';
+    context.fillText(name, 0, lineHeight / 2);
+    context.restore();
+
+}
+
+function calculateNamePosition(pos) {
+    let x = canvas.width/2;
+    let y = canvas.height/2;
+
+    if (pos == 0) {
+        y = canvas.height - canvasPadding/4;
+    } else if (pos == 1) {
+        x = canvasPadding/4;
+    } else if (pos == 2) {
+        y = canvasPadding/4;
+    } else {
+        x = canvas.width - canvasPadding/4;
+    }
+
+    return {x,y};
+}
+
 function calculateArrowPosition(pos) {
     
     let x = canvas.width/2;
     let y = canvas.height/2;
 
-    let delta = 1/5;
+    let delta = 1/4;
 
     if (pos == 0) {
         y *= (2-delta);
