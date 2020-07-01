@@ -9,6 +9,8 @@ var cardWidth = 90,
     cardHeight = cardWidth * 1.5,
     cardSpacing = cardWidth/2.,
     tableFactor = 1, // how many times larger does it appear on the table
+    tableCardHeight = cardHeight * tableFactor,
+    tableCardWidth = cardWidth * tableFactor,
     scoreBoardFactor = 0.5
     arrowWidth = 30,
     arrowHeight = 30,
@@ -44,7 +46,10 @@ function initializeCanvas() {
 
     canvas.width = canvasDimension;
     canvas.height = canvasDimension;
+    clearTable();
+}
 
+function clearTable() {
     let ctx = canvas.getContext('2d');
     ctx.roundRect(canvasPadding/2, canvasPadding/2, canvasDimension-canvasPadding,canvasDimension-canvasPadding,5);
 
@@ -161,13 +166,7 @@ function initializeListeners() {
     });
     
     socket.on('update-move', function(cardId, relPlayer) {
-
-        let tableCardWidth = cardWidth * tableFactor;
-        let tableCardHeight = cardHeight * tableFactor;
-
         let {x,y} = calculatePlayer(relPlayer);
-        x -= tableCardWidth/2;
-        y -= tableCardHeight/2;
         
         // get the card's image value
         
@@ -176,18 +175,10 @@ function initializeListeners() {
         img.src = 'src/cards/' + cardId + '.png';
         
         // get the context of the canvas
-        var context = canvas.getContext("2d");
-        
-        relPlayer = (relPlayer + 1) % 4;
-             
-        // draw the arrow
-        drawArrow(relPlayer);
+        let context = canvas.getContext("2d");
         
         // once the image loads, it will place the card on the screen
         img.addEventListener('load', function() {
-             // draw the arrow for the next player
-            
-
             // draw the card on the board
             context.drawImage(img, x, y, tableCardWidth, tableCardHeight);
 
@@ -295,8 +286,7 @@ function initializeListeners() {
     });
     
     socket.on('reset-canvas', function() {
-        var context = canvas.getContext("2d");
-        context.clearRect(0, 0, canvas.width, canvas.height);
+        clearTable();
     });   
 
     socket.on('reset-tens-and-tricks', function() {
@@ -311,23 +301,25 @@ function initializeListeners() {
     })
 }
 
-function calculatePlayer(player) {
+function calculatePlayer(pos) {
 
-    let x,y;
+    let x = canvas.width/2;
+    let y = canvas.height/2;
 
-    if (player == 0) {
-        x = canvas.width/2;
-        y = ((canvas.height*3)/4);
-    } else if (player == 1) {
-        x = canvas.width/4;
-        y = canvas.height/2;
-    } else if (player == 2) {
-        x = canvas.width/2;
-        y = canvas.height/4;
+    let delta = 3/5;
+
+    if (pos == 0) {
+        y *= (2-delta);
+    } else if (pos == 1) {
+        x *= (delta);
+    } else if (pos == 2) {
+        y *= (delta);
     } else {
-        x = ((canvas.width * 3)/4);
-        y = canvas.height/2;
+        x *= (2-delta);
     }
+
+    x -= tableCardWidth/2;
+    y -= tableCardHeight/2;
 
     return {
         x,
@@ -389,21 +381,19 @@ function drawArrow(pos) {
     // first, clear all arrows. Arrows are not always before the current position
     for (let i = 0; i < 4; i++) {
         let coords = calculateArrowPosition(i);
-        context.clearRect(coords.x, coords.y, arrowWidth, arrowHeight);
+
+        let {x, y} = calculateArrowPosition(i);
+        context.clearRect(x, y, arrowWidth, arrowHeight);
+        context.fillStyle = '#90ee90';
+        context.fillRect(x, y, arrowWidth, arrowHeight);
     }
     
-    let {x, y} = calculateArrowPosition(pos);
+    
 
     // once the image loads, it will place the card on the screen
     arrow.addEventListener('load', function() {
-
-        // delete the arrow for the current player
-        context.clearRect(old_x, old_y, arrowWidth, arrowHeight);
-
-        context.fillStyle = '#90ee90';
-        context.fillRect(old_x, old_y, arrowWidth, arrowHeight);
-        
         // draw the arrow to the next person.
+        let {x, y} = calculateArrowPosition(pos);
         context.drawImage(arrow, x, y, arrowWidth, arrowHeight);
 
     }, false); // no idea what the false means    
