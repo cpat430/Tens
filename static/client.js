@@ -136,8 +136,10 @@ function initializeListeners() {
     // called on initialising the player
     socket.on('init', function(state) {
         id = state;
+    });
 
-        drawArrow((4-id) % 4);
+    socket.on('current-turn', function(pos) {
+        drawArrow((4 + pos - id) % 4);
     });
     
     socket.on('table', function (cards) {
@@ -158,7 +160,7 @@ function initializeListeners() {
         alert("Invalid move, please choose a different card");
     });
     
-    socket.on('update-move', function(suit, value, relPlayer) {
+    socket.on('update-move', function(cardId, relPlayer) {
 
         let tableCardWidth = cardWidth * tableFactor;
         let tableCardHeight = cardHeight * tableFactor;
@@ -168,11 +170,10 @@ function initializeListeners() {
         y -= tableCardHeight/2;
         
         // get the card's image value
-        let cValue = suits[suit].toString() + value.toString();
         
         // create a new image for the played card
         let img = new Image();
-        img.src = 'src/cards/' + cValue + '.png';
+        img.src = 'src/cards/' + cardId + '.png';
         
         // get the context of the canvas
         var context = canvas.getContext("2d");
@@ -189,10 +190,6 @@ function initializeListeners() {
 
             // draw the card on the board
             context.drawImage(img, x, y, tableCardWidth, tableCardHeight);
-
-           
-
-            
 
         }, false); // no idea what the false means
     });
@@ -389,13 +386,13 @@ function drawArrow(pos) {
     let arrow = document.createElement('img');
     arrow.src = 'src/icons/arrow' + pos + '.png';
 
-    let coords = calculateArrowPosition((pos + 3) % 4);
-    let old_x = coords.x,
-        old_y = coords.y;
-
-    coords = calculateArrowPosition(pos);
-    let cur_x = coords.x,
-        cur_y = coords.y;
+    // first, clear all arrows. Arrows are not always before the current position
+    for (let i = 0; i < 4; i++) {
+        let coords = calculateArrowPosition(i);
+        context.clearRect(coords.x, coords.y, arrowWidth, arrowHeight);
+    }
+    
+    let {x, y} = calculateArrowPosition(pos);
 
     // once the image loads, it will place the card on the screen
     arrow.addEventListener('load', function() {
@@ -407,7 +404,7 @@ function drawArrow(pos) {
         context.fillRect(old_x, old_y, arrowWidth, arrowHeight);
         
         // draw the arrow to the next person.
-        context.drawImage(arrow, cur_x, cur_y, arrowWidth, arrowHeight);
+        context.drawImage(arrow, x, y, arrowWidth, arrowHeight);
 
     }, false); // no idea what the false means    
 }

@@ -6,7 +6,7 @@ var socketIO = require('socket.io');
 var app = express();
 var server = http.Server(app);
 var io = socketIO(server);
-var Game = require('./Game.js');
+var Room = require('./Room.js');
 
 const PORT = process.env.PORT || 5000;
 
@@ -36,50 +36,35 @@ function initializeExpress() {
     });
 }
 
-
-// game global variables
-let all_games = new Map(); // roomid -> 'Game' objects
-let player_counter = new Map(); // roomid -> player count
-let room_sockets = new Map(); // roomid -> socket Array
-let player_names = new Map(); // roomid -> four players
+let rooms = new Map();
 
 let sockets = [];
 
 let suits = ["S", "D", "C", "H"];
-let currentTurn = 0;
 
 // everything is initialised here
 io.on('connection', function (socket) {
     let id = -1;
-    let game = null;
     let _roomid;
+    let room = null;
     
     sockets.push(socket);
     
     socket.on('new player', function(roomid, pos, name) {
-        if (!all_games.has(roomid)) {
-            all_games.set(roomid, new Game(Math.floor(Math.random() * 4)));
-            player_counter.set(roomid, 0);
-            room_sockets.set(roomid, []);
-            player_names.set(roomid, ['', '', '', '']);
+        if (!rooms.has(roomid)) {
+            rooms.set(roomid, new Room(roomid));
         }
         
-        game = all_games.get(roomid);
-        _roomid = roomid;
-
-        if (room_sockets.get(roomid)[pos]) {
-            throw "Bad";
-        }
-        
-        room_sockets.get(roomid)[pos] = (socket);
-
+        room = rooms.get(roomid);
+        room.room_sockets[pos] = socket;
         id = pos;
         
         console.log("This is ID " + id);  
         socket.emit('init', id);
-        socket.emit('initialiseHand', game.players[id].hand);
+        socket.emit('initialiseHand', room.game.players[id].hand);
+        socket.emit('current-turn', room.game.turn);
         
-        if (game.players[id].dealer) {
+        if (room.game.players[id].dealer) {
             socket.emit('open-trump-modal');
         }
     });
@@ -87,69 +72,59 @@ io.on('connection', function (socket) {
     socket.on('update-trump', function(trump, id) {
 
         // set the trump
-        game.trump = trump;
+        room.game.trump = trump;
 
         // deal the rest of the player's hand
-        game.deal_cards(game.players[id], 13);
+        room.game.deal_cards(room.game.players[id], 13);
 
-        room_sockets.get(_roomid)[id].emit('redraw-hand', game.players[id].hand);
+        room.room_sockets[id].emit('redraw-hand', room.game.players[id].hand);
     })
     
     socket.on('turn', function (cardId) {
+        if (!room) return;
+
+        console.log(cardId);
         // update game state, only it the id is the right player
-        if (game.turn == id) {
-            let prevturn = game.turn;
-            var currentCard;
+        if (room.game.turn == id) {
+            let prevturn = room.game.turn;
             
-            var curPlayerHand = game.players[id].hand;
-            let index = -1;
-            
-            // iterate through the players hand and see if the id is equal to the card id
-            for (let i = 0; i < curPlayerHand.length; i++) {
-                // console.log(curPlayerHand[i]);
-                if (curPlayerHand[i].id === cardId) {
-                    currentCard = curPlayerHand[i];
-                    index = i;
-                }
-            }
-            
-            let {works, winner, tens, gameOver} = game.make_move(currentCard.suit, index); // game turn increases after this
+            let {works, winner, tens, gameOver} = room.game.make_move(cardId); // game turn increases after this
 
             if (works) {
 
-                if (currentTurn === 3) {
+                if (room.currentTurn == 3) {
                     // take the winner and update their scoreboard
                     for (let i = 0; i < 4; i++) {
-                        room_sockets.get(_roomid)[i].emit('update-scoreboard', gameOver, tens, winner);
+                        room.room_sockets[i].emit('update-scoreboard', gameOver, tens, winner);
                     }
                 }
                 
                 // if this is the last turn, remove on the next valid move.
-                if (currentTurn === 4) {
+                if (room.currentTurn == 4) {
                     // reset the canvas
-                    for (let i = 0; i < room_sockets.get(_roomid).length; i++) {
-                        room_sockets.get(_roomid)[i].emit('reset-canvas');
+                    for (let i = 0; i < 4; i++) {
+                        room.room_sockets[i].emit('reset-canvas');
                     }
-                    currentTurn = 0;
+                    room.currentTurn = 0;
 
                 }
                 
-                for (let i = 0; i < room_sockets.get(_roomid).length; i++) {
+                for (let i = 0; i < 4; i++) {
                     let relPlayer = (id - i + 4) % 4;
-                    room_sockets.get(_roomid)[i].emit('update-move', currentCard.suit, currentCard.value, relPlayer);
+                    room.room_sockets[i].emit('update-move', cardId, relPlayer);
                 }
-               
+
                 // redraw the hand.
-                socket.emit('redraw-hand', curPlayerHand);
+                socket.emit('redraw-hand', room.game.players[id].hand);
                 
                 try {
-                    room_sockets.get(_roomid)[prevturn].emit('offturn');
-                    room_sockets.get(_roomid)[game.turn].emit('onturn'); 
+                    room.room_sockets[prevturn].emit('offturn');
+                    room.room_sockets[room.game.turn].emit('onturn'); 
                 } catch (e) {
                     console.log("Some window isn't open");
                 }           
                 
-                currentTurn++;  
+                room.currentTurn++;  
                 
                 if (gameOver) {
                     
@@ -159,52 +134,53 @@ io.on('connection', function (socket) {
                 }
 
             } else {
-                room_sockets.get(_roomid)[prevturn].emit('invalid');
+                room.room_sockets[prevturn].emit('invalid');
+            }
+
+            for (let i = 0; i < 4; i++) {
+                room.room_sockets[i].emit('current-turn', room.game.turn);
             }
         }
     });
 
     socket.on('updateName', function(name) {
-        player_names.get(_roomid)[id] = name;
+        room.player_names[id] = name;
     })
     
-    socket.on('disconnect', function() {
-        console.log("Disconnected :(");
+    // socket.on('disconnect', function() {
+    //     console.log("Disconnected :(");
         
-        let i = sockets.indexOf(socket);
-        sockets.splice(i, 1);
+    //     let i = sockets.indexOf(socket);
+    //     sockets.splice(i, 1);
         
-        if (_roomid) {
-            let j = room_sockets.get(_roomid).indexOf(socket);
-            room_sockets.get(_roomid).splice(j, 1);
-        } 
-    })
+    //     if (_roomid) {
+    //         let j = room_sockets.get(_roomid).indexOf(socket);
+    //         room_sockets.get(_roomid).splice(j, 1);
+    //     } 
+    // })
 
     // Asked by menu.js, returns if the game exists
     socket.on('roomExistQuery', function(roomid) {
-        socket.emit('roomExistResult', player_names.get(roomid));
+        socket.emit('roomExistResult', room.player_names);
     });
 
     socket.on('newGame', function(roomid) {
 
         // find dealer
 
-        game = all_games.get(roomid);
+        let next_dealer = (room.game.dealer + 1) % 4;
 
-        let dealer = (game.current_dealer + 1) % 4;
+        room.newGame(next_dealer);
 
-        all_games.set(roomid, new Game(dealer));
-        game = all_games.get(roomid);
-
-        for (let i = 0; i < room_sockets.get(roomid).length; i++) {
-            let thissocket = room_sockets.get(roomid)[i];
+        for (let i = 0; i < 4; i++) {
+            let thissocket = room.room_sockets[i];
 
             if (thissocket) {
-                thissocket.emit('initialiseHand', game.players[i].hand);
+                thissocket.emit('initialiseHand', room.game.players[i].hand);
                 thissocket.emit('reset-canvas');
                 thissocket.emit('reset-tens-and-tricks');
 
-                if (game.players[i].dealer) {
+                if (room.game.players[i].dealer) {
                     thissocket.emit('open-trump-modal');
                 }
             }
