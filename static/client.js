@@ -141,6 +141,17 @@ function initializeListeners() {
     // called on initialising the player
     socket.on('init', function(state) {
         id = state;
+
+        // underline the team name you are in
+        let teamNumber;
+        if (id == 0 || id == 2) {
+            teamNumber = 'team1-name';
+        } else {
+            teamNumber = 'team2-name';
+        }
+
+        let teamName = document.getElementById(teamNumber);
+        teamName.style.textDecoration = 'underline';
     });
 
     socket.on('current-turn', function(pos) {
