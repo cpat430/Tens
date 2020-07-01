@@ -315,3 +315,15 @@ span {
 #name0:focus {
     outline: 0;
 }
+/* #choose-trump-modal {
+    display: block;
+} */
+
+#choose-trump-modal .modal-content {
+    max-width: 50%;
+}
+
+.trump-card:hover {
+    position: relative;
+    top: -5px;
+}

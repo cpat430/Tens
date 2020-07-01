@@ -10,28 +10,38 @@ const num_players = 4;
 const max_score = 13;
 
 module.exports = class Game {
-    constructor() {
+    constructor(dealer) {
         this.deck = new Deck();
         // create the playing card deck
         this.deck.create_deck(suits, values);
         // shuffle the deck
         this.deck.shuffle_deck();
 
+        this.current_dealer = dealer;
+
         // create the four players
-        this.p1 = new Player(1);
-        this.p2 = new Player(2),
-        this.p3 = new Player(3),
-        this.p4 = new Player(4);
+        this.p1 = new Player(0);
+        this.p2 = new Player(1),
+        this.p3 = new Player(2),
+        this.p4 = new Player(3);
         this.players = [this.p1,this.p2,this.p3,this.p4];
 
-        this.trump = 0; // players[0].get_trump(); // TODO make it an option
-        // console.log('trump', this.trump);
+        this.trump = -1; // players[0].get_trump(); // TODO make it an option
+
+        this.players[dealer].dealer = true;
+        
+        // deal 5 random cards to the first player to choose the trump
 
         // deal 13 cards each in players hands
         for (let p of this.players) {
-            this.deck.deal(p.hand, 13);
-            p.count_suits();
-            p.sortHand();
+            if (!p.dealer) {
+                // this.deck.deal(p.hand, 13);
+                this.deal_cards(p, 13);
+            } else {
+                this.deal_cards(p,5);
+            }
+            // p.count_suits();
+            // p.sortHand();
         }
         this.tricks = [];
         this.winning_player = 0;
@@ -39,6 +49,12 @@ module.exports = class Game {
 
         this.turn = 0;
         this.trick = null;
+    }
+
+    deal_cards(player, num) {
+        this.deck.deal(player.hand, num);
+        player.count_suits();
+        player.sortHand();
     }
     
     make_move(curSuit, index) {

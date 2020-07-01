@@ -58,7 +58,7 @@ io.on('connection', function (socket) {
     
     socket.on('new player', function(roomid, pos, name) {
         if (!all_games.has(roomid)) {
-            all_games.set(roomid, new Game());
+            all_games.set(roomid, new Game(Math.floor(Math.random() * 4)));
             player_counter.set(roomid, 0);
             room_sockets.set(roomid, []);
             player_names.set(roomid, ['', '', '', '']);
@@ -79,18 +79,21 @@ io.on('connection', function (socket) {
         socket.emit('init', id);
         socket.emit('initialiseHand', game.players[id].hand);
         
-        if (id === 0) {
-            socket.emit('onturn');
-        } else {
-            socket.emit('offturn');
+        if (game.players[id].dealer) {
+            socket.emit('open-trump-modal');
         }
     });
-    
-    // socket.on('made-move', function(card, player) {
-    //     for (let i = 0; i < 4; i++) {
-    //         socket.emit('update-move', card, player);
-    //     }
-    // }); 
+
+    socket.on('update-trump', function(trump, id) {
+
+        // set the trump
+        game.trump = trump;
+
+        // deal the rest of the player's hand
+        game.deal_cards(game.players[id], 13);
+
+        room_sockets.get(_roomid)[id].emit('redraw-hand', game.players[id].hand);
+    })
     
     socket.on('turn', function (cardId) {
         // update game state, only it the id is the right player
@@ -183,15 +186,27 @@ io.on('connection', function (socket) {
     });
 
     socket.on('newGame', function(roomid) {
-        all_games.set(roomid, new Game());
+
+        // find dealer
+
         game = all_games.get(roomid);
+
+        let dealer = (game.current_dealer + 1) % 4;
+
+        all_games.set(roomid, new Game(dealer));
+        game = all_games.get(roomid);
+
         for (let i = 0; i < room_sockets.get(roomid).length; i++) {
             let thissocket = room_sockets.get(roomid)[i];
 
             if (thissocket) {
-            thissocket.emit('initialiseHand', game.players[i].hand);
-            thissocket.emit('reset-canvas');
-            thissocket.emit('reset-tens-and-tricks');
+                thissocket.emit('initialiseHand', game.players[i].hand);
+                thissocket.emit('reset-canvas');
+                thissocket.emit('reset-tens-and-tricks');
+
+                if (game.players[i].dealer) {
+                    thissocket.emit('open-trump-modal');
+                }
             }
             
         }
