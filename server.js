@@ -83,7 +83,6 @@ io.on('connection', function (socket) {
     socket.on('turn', function (cardId) {
         if (!room) return;
 
-        console.log(cardId);
         // update game state, only it the id is the right player
         if (room.game.turn == id) {
             let prevturn = room.game.turn;

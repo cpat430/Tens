@@ -106,38 +106,33 @@ module.exports = class Game {
 
         this.players[this.turn].num_suits[card.get_suit()]--;
 
-        console.log(this.turn);
-        console.log(this.players[this.turn].hand);
-
         this.trick.cards.push(card);
 
         this.turn = (this.turn + 1) % 4;
 
         if (this.trick.cards.length == 4) {
-            let winning_index = this.trick.get_winner();
+            let get_winner = this.trick.get_winner();
+
+            let winning_index = get_winner.winner;
+            tens = get_winner.tens;
+
             this.winning_player = (this.winning_player + winning_index) % 4;
+
             console.log('Player ' + this.winning_player + ' won!');
 
             // add the trick to the winning players tricks and add the ten value
             this.players[this.winning_player].tricks.push(this.trick);
-            // this.players[this.winning_player].tens += this.trick.tens;
-            // if (this.trick.tens.length) {
-            //     this.players[this.winning_player].tens.push(this.trick.tens);
-            // }
 
-            for (let i = 0; i < this.trick.tens.length; i++) {
-                this.players[this.winning_player].tens.push(this.trick.tens[i]);
+            for (let i = 0; i < tens.length; i++) {
+                this.players[this.winning_player].tens.push(tens[i]);
             }
-            
-            // go through the trick to find which tens were won.
-            tens = this.trick.tens;
 
             // get the winning partner
             this.winning_partner = (this.winning_player + 2) % 4;
             
             console.log('winners', this.winning_player, this.winning_partner);
 
-            if ((this.winning_partner + this.winning_player) === 2) {
+            if ((this.winning_partner + this.winning_player) == 2) {
                 // team 1
                 winner = 1;
             } else {
