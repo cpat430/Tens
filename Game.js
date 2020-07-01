@@ -17,8 +17,6 @@ module.exports = class Game {
         // shuffle the deck
         this.deck.shuffle_deck();
 
-        this.current_dealer = dealer;
-
         // create the four players
         this.p1 = new Player(0);
         this.p2 = new Player(1),
@@ -29,6 +27,8 @@ module.exports = class Game {
         this.trump = -1; // players[0].get_trump(); // TODO make it an option
 
         this.players[dealer].dealer = true;
+        this.dealer = dealer;
+        this.turn = dealer;
         
         // deal 5 random cards to the first player to choose the trump
 
@@ -47,7 +47,6 @@ module.exports = class Game {
         this.winning_player = 0;
         this.winning_partner = 2;
 
-        this.turn = 0;
         this.trick = null;
     }
 
