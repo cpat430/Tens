@@ -128,7 +128,7 @@
 
 #ready {
     float: right;
-    background-color: lightgreen;
+    background-color: #90ee90;
 }
 
 #ready:hover {
@@ -137,7 +137,7 @@
 }
 
 canvas {
-    background-color: lightgreen;
+    background-color: #83E383;
 }
 
 h1 {

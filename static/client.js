@@ -8,10 +8,12 @@ var suits = ['S', 'D', 'C', 'H'];
 var cardWidth = 90,
     cardHeight = cardWidth * 1.5,
     cardSpacing = cardWidth/2.,
-    tableFactor = 1.1, // how many times larger does it appear on the table
+    tableFactor = 1, // how many times larger does it appear on the table
     scoreBoardFactor = 0.5
     arrowWidth = 30,
-    arrowHeight = 30;
+    arrowHeight = 30,
+    canvasDimension = 500,
+    canvasPadding = 50;
 
 let room = '-1';
 
@@ -25,12 +27,29 @@ function enterRoom() {
 
     document.getElementById("room-code").innerHTML = room;
 }
+CanvasRenderingContext2D.prototype.roundRect = function (x, y, width, height, radius) {
+    if (width < 2 * radius) radius = width / 2;
+    if (height < 2 * radius) radius = height / 2;
+    this.beginPath();
+    this.moveTo(x + radius, y);
+    this.arcTo(x + width, y, x + width, y + height, radius);
+    this.arcTo(x + width, y + height, x, y + height, radius);
+    this.arcTo(x, y + height, x, y, radius);
+    this.arcTo(x, y, x + width, y, radius);
+    this.closePath();
+    return this;
+  }
 
 function initializeCanvas() {
 
-    canvas.width = 550;
-    canvas.height = 550;
-    canvas.style.borderRadius = "15px";
+    canvas.width = canvasDimension;
+    canvas.height = canvasDimension;
+
+    let ctx = canvas.getContext('2d');
+    ctx.roundRect(canvasPadding/2, canvasPadding/2, canvasDimension-canvasPadding,canvasDimension-canvasPadding,5);
+
+    ctx.fillStyle = '#90ee90';
+    ctx.fill();
 }
 
 function chooseTrump(trump) {
@@ -158,16 +177,22 @@ function initializeListeners() {
         // get the context of the canvas
         var context = canvas.getContext("2d");
         
+        relPlayer = (relPlayer + 1) % 4;
+             
+        // draw the arrow
+        drawArrow(relPlayer);
+        
         // once the image loads, it will place the card on the screen
         img.addEventListener('load', function() {
+             // draw the arrow for the next player
+            
+
             // draw the card on the board
             context.drawImage(img, x, y, tableCardWidth, tableCardHeight);
 
-            // draw the arrow for the next player
-            relPlayer = (relPlayer + 1) % 4;
+           
 
-            // draw the arrow
-            drawArrow(relPlayer);
+            
 
         }, false); // no idea what the false means
     });
@@ -377,6 +402,9 @@ function drawArrow(pos) {
 
         // delete the arrow for the current player
         context.clearRect(old_x, old_y, arrowWidth, arrowHeight);
+
+        context.fillStyle = '#90ee90';
+        context.fillRect(old_x, old_y, arrowWidth, arrowHeight);
         
         // draw the arrow to the next person.
         context.drawImage(arrow, cur_x, cur_y, arrowWidth, arrowHeight);
@@ -389,14 +417,16 @@ function calculateArrowPosition(pos) {
     let x = canvas.width/2;
     let y = canvas.height/2;
 
+    let delta = 1/5;
+
     if (pos == 0) {
-        y *= (15/8);
+        y *= (2-delta);
     } else if (pos == 1) {
-        x *= (1/8);
+        x *= (delta);
     } else if (pos == 2) {
-        y *= (1/8);
+        y *= (delta);
     } else {
-        x *= (15/8);
+        x *= (2-delta);
     }
 
     x -= arrowWidth/2;
@@ -422,6 +452,7 @@ function closeNav() {
 
 enterRoom();
 initializeListeners();
+initializeCanvas();
 // initialiseIcons();
 // initialiseModal();
 // updateName("Yoohoo");
@@ -453,3 +484,9 @@ pname.onkeyup = function(e) {
     changeName(pname.innerHTML);
     console.log(e);
 }
+
+
+
+
+
+  
