@@ -58,7 +58,7 @@ io.on('connection', function (socket) {
     
     socket.on('new player', function(roomid, pos, name) {
         if (!all_games.has(roomid)) {
-            all_games.set(roomid, new Game());
+            all_games.set(roomid, new Game(Math.floor(Math.random() * 4)));
             player_counter.set(roomid, 0);
             room_sockets.set(roomid, []);
             player_names.set(roomid, ['', '', '', '']);
@@ -79,11 +79,8 @@ io.on('connection', function (socket) {
         socket.emit('init', id);
         socket.emit('initialiseHand', game.players[id].hand);
         
-        if (id == 0) {
-            socket.emit('onturn');
+        if (game.players[id].dealer) {
             socket.emit('open-trump-modal');
-        } else {
-            socket.emit('offturn');
         }
     });
 
@@ -189,8 +186,16 @@ io.on('connection', function (socket) {
     });
 
     socket.on('newGame', function(roomid) {
-        all_games.set(roomid, new Game());
+
+        // find dealer
+
         game = all_games.get(roomid);
+
+        let dealer = (game.current_dealer + 1) % 4;
+
+        all_games.set(roomid, new Game(dealer));
+        game = all_games.get(roomid);
+
         for (let i = 0; i < room_sockets.get(roomid).length; i++) {
             let thissocket = room_sockets.get(roomid)[i];
 
@@ -198,6 +203,10 @@ io.on('connection', function (socket) {
                 thissocket.emit('initialiseHand', game.players[i].hand);
                 thissocket.emit('reset-canvas');
                 thissocket.emit('reset-tens-and-tricks');
+
+                if (game.players[i].dealer) {
+                    thissocket.emit('open-trump-modal');
+                }
             }
             
         }

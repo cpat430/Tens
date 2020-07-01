@@ -10,23 +10,25 @@ const num_players = 4;
 const max_score = 13;
 
 module.exports = class Game {
-    constructor() {
+    constructor(dealer) {
         this.deck = new Deck();
         // create the playing card deck
         this.deck.create_deck(suits, values);
         // shuffle the deck
         this.deck.shuffle_deck();
 
+        this.current_dealer = dealer;
+
         // create the four players
-        this.p1 = new Player(1);
-        this.p2 = new Player(2),
-        this.p3 = new Player(3),
-        this.p4 = new Player(4);
+        this.p1 = new Player(0);
+        this.p2 = new Player(1),
+        this.p3 = new Player(2),
+        this.p4 = new Player(3);
         this.players = [this.p1,this.p2,this.p3,this.p4];
 
         this.trump = -1; // players[0].get_trump(); // TODO make it an option
 
-        this.p1.dealer = true;
+        this.players[dealer].dealer = true;
         
         // deal 5 random cards to the first player to choose the trump
 

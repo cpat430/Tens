@@ -124,14 +124,6 @@ function initializeListeners() {
     socket.on('table', function (cards) {
         showState(cards);
     });
-    
-    socket.on('onturn', function() {
-        // document.getElementById('turn').innerHTML="On Turn";
-    });
-    
-    socket.on('offturn', function() {
-        // document.getElementById('turn').innerHTML="Off Turn";
-    });
 
     socket.on('open-trump-modal', function() {
         let modal = document.getElementById('choose-trump-modal');
@@ -361,7 +353,6 @@ function initialiseModal() {
     }
 }
 
-
 function drawArrow(pos) {
     
     let context = canvas.getContext("2d");
@@ -444,11 +435,6 @@ function closeGameOverModal() {
 function newGame() {
     // make new game object
     socket.emit('newGame', room); // deals the hand here too
-    // clear table
-
-    // clear cards
-
-    
 
     closeGameOverModal();
 }
