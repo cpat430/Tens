@@ -21,17 +21,36 @@ let room = '-1';
 
 // declare which room you want to join, and what your name is
 function enterRoom() {
+
+    // get the search bar parameters
     var urlParams = new URLSearchParams(window.location.search);
     
+    // get the room id
     room = urlParams.get("roomid");
+
+    // get the player's position
     let pos = urlParams.get("pos");
+
+    // create the new player with the room id and position
     socket.emit('new player', room, pos);
 
+    // set the game room code to the id.
     document.getElementById("room-code").innerHTML = room;
 }
+
+/**
+ * I will leave this for you to do
+ * 
+ * @param {number} x 
+ * @param {number} y 
+ * @param {number} width 
+ * @param {number} height 
+ * @param {number} radius 
+ */
 CanvasRenderingContext2D.prototype.roundRect = function (x, y, width, height, radius) {
     if (width < 2 * radius) radius = width / 2;
     if (height < 2 * radius) radius = height / 2;
+
     this.beginPath();
     this.moveTo(x + radius, y);
     this.arcTo(x + width, y, x + width, y + height, radius);
@@ -39,9 +58,13 @@ CanvasRenderingContext2D.prototype.roundRect = function (x, y, width, height, ra
     this.arcTo(x, y + height, x, y, radius);
     this.arcTo(x, y, x + width, y, radius);
     this.closePath();
-    return this;
-  }
 
+    return this;
+}
+
+/**
+ * Initialise the canvas where the board, cards, and names will be drawn
+ */
 function initializeCanvas() {
 
     canvas.width = canvasDimension;
@@ -49,7 +72,11 @@ function initializeCanvas() {
     clearTable();
 }
 
+/**
+ * Clears the middle table where the cards will be places
+ */
 function clearTable() {
+
     let ctx = canvas.getContext('2d');
     ctx.roundRect(canvasPadding/2, canvasPadding/2, canvasDimension-canvasPadding,canvasDimension-canvasPadding,5);
 
@@ -57,6 +84,14 @@ function clearTable() {
     ctx.fill();
 }
 
+/**
+ * Choose the trump.
+ * Gets the trump from the trump choosing player.
+ * Updates the trump in the server.
+ * Closes the trump modal
+ * 
+ * @param {number} trump 
+ */
 function chooseTrump(trump) {
 
     console.log('this is the trump number', trump);
@@ -68,6 +103,11 @@ function chooseTrump(trump) {
     trumpModal.style.display = 'none';
 }
 
+/**
+ * Paints the hand of the players.
+ * 
+ * @param {Card} cards 
+ */
 function paintCards(cards) {
     hand.innerHTML = "";
     hand.style.height = cardHeight;
@@ -90,20 +130,20 @@ function paintCards(cards) {
         img.id = cards[i].id;
         
         // style the card here
-        // img.style.flexBasis = "200px";
-        // img.style.flex = "10px";
-        // img.style.alignContent = "space-between 10px";
         img.style.position = "absolute";
-        // img.style.left = "20px";
-
         img.style.left = (offset + (i+1) * (cardWidth - cardSpacing) - cardSpacing) + 'px';
+
+        // on hover, the card moves up to indicate which card the mouse is over.
         img.onmouseover = function() {
             img.style.bottom = 5;
         };
+
+        // when releasing the card, it drops.
         img.onmouseleave = function() {
             img.style.bottom = 0;
         }
 
+        // when the card is clicked, it makes a turn
         img.onclick = function() {
             // play the card that is clicked if it is valid
             turn(img.id);
@@ -114,69 +154,132 @@ function paintCards(cards) {
     }
 }
 
+/**
+ * Adds a card to a div
+ * 
+ * @param {HTMLElement} div 
+ * @param {string} cardName 
+ */
 function addCardToDiv(div, cardName) {
+
     let img = new Image(cardWidth * scoreBoardFactor, cardHeight * scoreBoardFactor);
     img.src = 'src/cards/' + cardName + '.png';
     img.style.margin = "5px";
 
+    // append the image to the div
     div.appendChild(img);
 }
 
+/**
+ * Adds a trick (tenless) to the scoreboard
+ * 
+ * @param {string} team 
+ */
 function addTrickToScoreboard(team) {
     let teamTricks = document.getElementById(team + '-tricks');
     addCardToDiv(teamTricks, 'Back');
 }
 
+/**
+ * Adds a tens to the scoreboard
+ * 
+ * @param {string} team 
+ * @param {Card} ten 
+ */
 function addTenToScoreboard(team, ten) {
     let teamTens = document.getElementById(team + '-tens');
     addCardToDiv(teamTens, ten.id);
 }
 
+/**
+ * delete all the contents from the div
+ * 
+ * @param {HTMLElement} div 
+ */
 function deleteAllFromDiv(div) {
     div.innerHTML = "";
     console.log(div);
 }
 
+/**
+ * Underline the team you are in.
+ * 
+ * @param {number} id 
+ */
+function underlineTeamName(id) {
+    let teamNumber = (id == 0 || id == 2) ? 'team1-name' : 'team2-name';
+
+    let teamName = document.getElementById(teamNumber);
+    teamName.style.textDecoration = 'underline';
+}
+
+/**
+ * Initialise the socket's listeners to communicate with the server.
+ */
 function initializeListeners() {
-    // called on initialising the player
+
+    /**
+     * Initialise the id from the server
+     * Then underline the current team name.
+     * 
+     * @param {number} state
+     */
     socket.on('init', function(state) {
         id = state;
 
-        // underline the team name you are in
-        let teamNumber;
-        if (id == 0 || id == 2) {
-            teamNumber = 'team1-name';
-        } else {
-            teamNumber = 'team2-name';
-        }
-
-        let teamName = document.getElementById(teamNumber);
-        teamName.style.textDecoration = 'underline';
+        underlineTeamName(id);
     });
 
+    /**
+     * Draw the arrow to show who's the current turn is.
+     * 
+     * @param {number} pos
+     */
     socket.on('current-turn', function(pos) {
         drawArrow((4 + pos - id) % 4);
     });
     
+    /**
+     * No idea what this does
+     * @todo
+     */
     socket.on('table', function (cards) {
         showState(cards);
     });
 
+    /**
+     * Opens the trump modal for the user to choose the trump.
+     */
     socket.on('open-trump-modal', function() {
         let modal = document.getElementById('choose-trump-modal');
 
         modal.style.display = 'block';
     });
     
+    /**
+     * Nothing atm.
+     */
     socket.on('valid', function(card, player) {
-            // nothing happens
+        // nothing happens
     });
     
+    /**
+     * Tells the player that the card they're played is invalid.
+     */
     socket.on('invalid', function() {
         alert("Invalid move, please choose a different card");
     });
     
+    /**
+     * Updates the move by drawing the card that is relative 
+     * to the current player.
+     * 
+     * @param {number} cardID
+     * @param {number} relPlayer
+     */
     socket.on('update-move', function(cardId, relPlayer) {
+
+        // find the coordinates of the relative player. 
         let {x,y} = calculatePlayer(relPlayer);
         
         // get the card's image value
@@ -196,14 +299,27 @@ function initializeListeners() {
         }, false); // no idea what the false means
     });
     
+    /**
+     * Initialise the players hand
+     * 
+     * @param {Cards[]} initialHand
+     */
     socket.on('initialiseHand', function(initialHand) {
         paintCards(initialHand);
     });
     
+    /**
+     * Updates the scoreboard
+     * 
+     * @param {boolean} gameOver
+     * @param {Card[]} tens
+     * @param {number} winner
+     */
     socket.on('update-scoreboard', function(gameOver, tens, winner) {
         
         console.log(gameOver, tens, winner);
         
+        // add the tricks and tens to the correct team.
         if (winner == 1) {
             addTrickToScoreboard("team1");
             for (let i = 0; i < tens.length; i++) {
@@ -215,71 +331,8 @@ function initializeListeners() {
                 addTenToScoreboard("team2", tens[i]);
             }
         }
-    });
 
-    socket.on('redraw-hand', function(curHand) {
-        paintCards(curHand);
-    });
-
-    // updates at the end of a trick. 
-    socket.on('add-winning-card', function(gameOver, tens, winner) {
-
-        // update the scoreboard here.
-        if (winner == 1) {
-            let team1Tricks = document.getElementById('team1-current-tricks');
-            // let team1Tens = document.getElementById('team1-tens');
-            let cardString = 'cards/full_deck/Back.png';
-
-            if (tens.length) {
-                for (let i = 0; i < tens.length; i++) {
-                    let img = document.createElement('img');
-                    cardString = 'cards/full_deck/' + suits[tens[i].suit].toString() + tens[i].value.toString() + '.png';
-                    img.src = cardString;
-                    img.width = cardWidth;
-                    img.height = cardHeight;
-                    // img.style.position = "absolute";
-                    // img.style.left = ((i+1) * (cardWidth - cardSpacing) - cardSpacing) + 'px';
-
-                    team1Tricks.appendChild(img);
-                }
-            } else {
-                let img = document.createElement('img');
-                img.src = cardString;
-                img.width = cardWidth;
-                img.height = cardHeight;
-                img.left = cardSpacing;
-                team1Tricks.appendChild(img);
-            }
-            // team1Tens.innerHTML = eval(team1Tens.innerHTML) + eval(tens);
-
-        } else {
-            let team2Tricks = document.getElementById('team2-current-tricks');
-            // let team1Tricks = document.getElementById('team1-current-tricks');
-            // let team1Tens = document.getElementById('team1-tens');
-            let cardString = 'cards/full_deck/Back.png';
-
-            if (tens.length) {
-                for (let i = 0; i < tens.length; i++) {
-                    let img = document.createElement('img');
-                    cardString = 'cards/full_deck/' + suits[tens[i].suit].toString() + tens[i].value.toString() + '.png';
-                    img.src = cardString;
-                    img.width = cardWidth;
-                    img.height = cardHeight;
-                    // img.style.position = "relative";
-                    // img.style.left = ((i+1) * (cardWidth - cardSpacing) - cardSpacing) + 'px';
-
-                    team2Tricks.appendChild(img);
-                }
-            } else {
-                let img = document.createElement('img');
-                img.src = cardString;
-                img.width = cardWidth;
-                img.height = cardHeight;
-                img.left = cardSpacing;
-                team2Tricks.appendChild(img);
-            }
-        }
-        
+        // if the game is over, add a score to the total score.
         if (gameOver) {
             let id = 'team' + winner + '-total-score';
             let winningTeam = document.getElementById(id);
@@ -287,19 +340,36 @@ function initializeListeners() {
             winningTeam.innerHTML++;
             return;
         }
-        
-        console.log('tens', tens);
-             
+    });
+
+    /**
+     * Redraw the players hand
+     * 
+     * @param {Card[]} curHand
+     */
+    socket.on('redraw-hand', function(curHand) {
+        paintCards(curHand);
     });
     
+    /**
+     * Shows the game over modal 
+     * 
+     * @param {string} message
+     */
     socket.on('end-of-game', function(message) {
         showGameOverModal();
     });
     
+    /**
+     * Resets the canvas.
+     */
     socket.on('reset-canvas', function() {
         clearTable();
     });   
 
+    /**
+     * Resets the tens and tricks
+     */
     socket.on('reset-tens-and-tricks', function() {
         deleteAllFromDiv(document.getElementById('team1-tens'));
         deleteAllFromDiv(document.getElementById('team2-tens'));
@@ -307,6 +377,12 @@ function initializeListeners() {
         deleteAllFromDiv(document.getElementById('team2-tricks'));
     });
 
+    /**
+     * Updates the players name and draws the relative position.
+     * 
+     * @param {number} pos
+     * @param {string} name
+     */
     socket.on('updateName', function(pos, name) {
         let relPos = (pos - id + 4) % 4;
 
@@ -314,6 +390,14 @@ function initializeListeners() {
     })
 }
 
+/**
+ * Calculates the players position
+ * 
+ * @param {number} pos 
+ * 
+ * @return {number} x
+ * @return {number} y
+ */
 function calculatePlayer(pos) {
 
     let x = canvas.width/2;
@@ -340,22 +424,37 @@ function calculatePlayer(pos) {
     };
 }
 
-// handles clicking as a turn
+/**
+ * handles clicking as a turn
+ * @param {number} value 
+ */
 function turn(value) {
     socket.emit('turn', value);
 }
 
-// show function - resets the canvas and prints the current state
+/**
+ * show function, resets the canvas and prints the current state
+ * 
+ * @param {number} state 
+ */
 function showState(state) {
+
     let ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, 800, 600);
     ctx.fillText(state, 0, 300);
 }
 
+/**
+ * Updates the name of the player
+ * @param {string} name 
+ */
 function updateName(name) {
     socket.emit('updateName', name);
 }
 
+/**
+ * initialise the game over modal.
+ */
 function initialiseModal() {
     // Get the modal
     var modal = document.getElementById("game-over-modal");
@@ -384,16 +483,20 @@ function initialiseModal() {
     }
 }
 
+/**
+ * Draws an arrow on the canvas based off of the position.
+ * @param {number} pos 
+ */
 function drawArrow(pos) {
     
     let context = canvas.getContext("2d");
     
+    // create the arrow element
     let arrow = document.createElement('img');
     arrow.src = 'src/icons/arrow' + pos + '.png';
 
     // first, clear all arrows. Arrows are not always before the current position
     for (let i = 0; i < 4; i++) {
-        let coords = calculateArrowPosition(i);
 
         let {x, y} = calculateArrowPosition(i);
         context.clearRect(x, y, arrowWidth, arrowHeight);
@@ -401,22 +504,31 @@ function drawArrow(pos) {
         context.fillRect(x, y, arrowWidth, arrowHeight);
     }
     
-    
-
     // once the image loads, it will place the card on the screen
     arrow.addEventListener('load', function() {
+
         // draw the arrow to the next person.
         let {x, y} = calculateArrowPosition(pos);
+
         context.drawImage(arrow, x, y, arrowWidth, arrowHeight);
 
     }, false); // no idea what the false means    
 }
 
+/**
+ * Draws the name on the canvas
+ * 
+ * @param {number} pos 
+ * @param {string} name 
+ */
 function drawName(pos, name) {
+    
+    // get the x and y of the position
     let {x,y} = calculateNamePosition(pos);
 
     let context = canvas.getContext('2d');
 
+    // calculate the angle based on the position
     let angle = pos == 1 ? -Math.PI/2 : pos == 3 ? Math.PI/2 : 0;
 
     context.save();
@@ -434,9 +546,16 @@ function drawName(pos, name) {
     context.fillStyle = 'black';
     context.fillText(name, 0, lineHeight / 2);
     context.restore();
-
 }
 
+/**
+ * Calculates the position of the name
+ * 
+ * @param {number} pos 
+ * 
+ * @return {number} x
+ * @return {number} y
+ */
 function calculateNamePosition(pos) {
     let x = canvas.width/2;
     let y = canvas.height/2;
@@ -454,6 +573,14 @@ function calculateNamePosition(pos) {
     return {x,y};
 }
 
+/**
+ * Calculates the arrows position
+ * 
+ * @param {number} pos 
+ * 
+ * @return {number} x
+ * @return {number} y
+ */
 function calculateArrowPosition(pos) {
     
     let x = canvas.width/2;
@@ -480,14 +607,23 @@ function calculateArrowPosition(pos) {
     };
 }
 
+/**
+ * Return to the menu
+ */
 function goToMenu() {
     location.href = '/';
 }
 
+/**
+ * Open the side navigation bar
+ */
 function openNav() {
     document.getElementById("mySidenav").style.width = "20%";
 }
 
+/**
+ * Close the side navigation bar
+ */
 function closeNav() {
     document.getElementById("mySidenav").style.width = "0";
 }
@@ -495,19 +631,25 @@ function closeNav() {
 enterRoom();
 initializeListeners();
 initializeCanvas();
-// initialiseIcons();
-// initialiseModal();
-// updateName("Yoohoo");
 closeNav();
 
+/**
+ * Shows the game over modal
+ */
 function showGameOverModal() {
     document.getElementById('game-over-modal').style.display='block';
 }
 
+/**
+ * Closes the game over modal
+ */
 function closeGameOverModal() {
     document.getElementById('game-over-modal').style.display='none';
 }
 
+/**
+ * Creates a new game
+ */
 function newGame() {
     // make new game object
     socket.emit('newGame', room); // deals the hand here too
@@ -515,7 +657,11 @@ function newGame() {
     closeGameOverModal();
 }
 
-
+/**
+ * Change the players name 
+ * 
+ * @param {string} name 
+ */
 function changeName(name) {
     socket.emit('changeName', name);
 }
@@ -526,9 +672,3 @@ pname.onkeyup = function(e) {
     changeName(pname.innerHTML);
     console.log(e);
 }
-
-
-
-
-
-  
