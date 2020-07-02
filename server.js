@@ -175,9 +175,10 @@ io.on('connection', function (socket) {
                     let message = "Team" + winner + " won the game";
 
                     // emit the end of game to the client.
-                    for (let i = 0; i < 4; i++) {
-                        room.room_sockets[i].emit('end-of-game', message);
-                    }
+                    // for (let i = 0; i < 4; i++) {
+                    //     room.room_sockets[i].emit('end-of-game', message);
+                    // }
+                    socket.emit('end-of-game', message); // TODO: make it so it sends to everyone and gets status.
                     
                 }
 
