@@ -526,9 +526,3 @@ pname.onkeyup = function(e) {
     changeName(pname.innerHTML);
     console.log(e);
 }
-
-
-
-
-
-  
