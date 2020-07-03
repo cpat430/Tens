@@ -8,21 +8,13 @@ module.exports = class Player {
         this.dealer = false;
     }
 
-    get_trump() {
-
-        // deal five cards to the first player
-        this.hand = deck.deal(this.hand, 5);
-        
-        // bring up a modal to choose a trump
-        
-
-        // ensures one trump is chosen
-
-        let trump = suits[index];
-
-        return trump;
-    }
-
+    /**
+     * Check if the team has won by counting their combined tricks.
+     * 
+     * @param {Player} partner 
+     * 
+     * @return {boolean} win
+     */
     check_win(partner) {
 
         console.log('Tens: ' + (this.tens.length + partner.tens.length));
@@ -37,18 +29,29 @@ module.exports = class Player {
         }
     }
 
+    /**
+     * Display the hand to console, mainly for debugging
+     */
     display_hand() {
         for (let i = 0; i < this.hand.length; i++) {
             console.log(this.hand[i].toString());
         }
     }
 
+    /**
+     * Count the number of suits in each hand
+     */
     count_suits() {
         for (let i = 0; i < this.hand.length; i++) {
             this.num_suits[this.hand[i].get_suit()]++;
         }
     }
 
+    /**
+     * Convert the hand to a string
+     * 
+     * @return {string} s
+     */
     toString() {
         let s = "";
         for (let i = 0; i < this.hand.length; i++) {
@@ -57,6 +60,9 @@ module.exports = class Player {
         return s;
     }
 
+    /**
+     * Sort hand based off of the suit and value.
+     */
     sortHand() {
         this.hand.sort(function(a, b) {
             if (a.suit === b.suit) {

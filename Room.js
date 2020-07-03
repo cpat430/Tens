@@ -10,6 +10,10 @@ module.exports = class Room {
         this.currentTurn = 0;
     }
 
+    /**
+     * Creates a new game and assigns the new dealer.
+     * @param {number} dealer 
+     */
     newGame(dealer) {
         this.game = new Game(dealer);
     }

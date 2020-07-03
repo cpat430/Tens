@@ -4,10 +4,16 @@ var socket = io();
 var modal = document.getElementById("myModal");
 
 // When the user clicks on the button, open the modal
+/**
+ * Opens the modal that can restart the game
+ */
 function showModal() {
     modal.style.display = "block";
 }
 
+/**
+ * Closes the restart game modal
+ */
 function closeModal( ){
     modal.style.display = "none";
 }
@@ -19,12 +25,20 @@ window.onclick = function(event) {
     }
 }
 
+/**
+ * Checks if a room already exists
+ * @param {string} roomid 
+ */
 function checkRoomExist(roomid) {
     socket.emit('roomExistQuery', roomid);
 }
 
 let input = document.getElementById('roomidinput');
 
+/**
+ * Updates all the player names given a list of the names.
+ * @param {string[]} names 
+ */
 function updatePlayerNames(names) {
     let grid = document.getElementsByClassName('grid')[0];
     let items = document.getElementsByClassName('room-person');
@@ -43,6 +57,11 @@ function updatePlayerNames(names) {
     }
 }
 
+/**
+ * If the room exists, the changes are made to the room
+ * 
+ * @param {string[]} res
+ */
 socket.on('roomExistResult', function(res) {
     updatePlayerNames(res);
 });
@@ -51,17 +70,28 @@ input.oninput = function() {
     checkRoomExist(input.value);
 }
 
+/**
+ * Gets a random code to assign to the room.
+ * 
+ * @return {string} str
+ */
 function getRandomCode() {
     let str = "";
     let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    for (let i = 0; i < 5; i++) {
+    let code_length = 5;
+    
+    for (let i = 0; i < code_length; i++) {
         str += alphabet[Math.floor(Math.random() * 26)];
     }
-    console.log(str);
+    
     return str;
 }
 
+/**
+ * Allows the client to enter a room with a room id and a position.
+ * @param {string} roomid 
+ * @param {number} pos 
+ */
 function enterRoom(roomid, pos) {
     location.href = "/game?roomid=" + roomid + "&pos=" + pos;
-    console.log(roomid);
 }

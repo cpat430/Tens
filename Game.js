@@ -8,6 +8,8 @@ let suits = ['S', 'D', 'C', 'H'];
 let values = [2,3,4,5,6,7,8,9,10,11,12,13,14];
 const num_players = 4;
 const max_score = 13;
+const max_cards = 13;
+const choose_trump_cards = 5;
 
 module.exports = class Game {
     constructor(dealer) {
@@ -36,9 +38,9 @@ module.exports = class Game {
         for (let p of this.players) {
             if (!p.dealer) {
                 // this.deck.deal(p.hand, 13);
-                this.deal_cards(p, 13);
+                this.deal_cards(p, max_cards);
             } else {
-                this.deal_cards(p,5);
+                this.deal_cards(p,choose_trump_cards);
             }
             // p.count_suits();
             // p.sortHand();
@@ -52,7 +54,9 @@ module.exports = class Game {
 
     deal_cards(player, num) {
         this.deck.deal(player.hand, num);
-        player.count_suits();
+        if (num != 5) {
+            player.count_suits();
+        }
         player.sortHand();
     }
     
@@ -80,10 +84,12 @@ module.exports = class Game {
             // find the person who starts
             this.turn = this.winning_player;
 
-            console.log('Player ' + this.winning_player + ' starts.' + '\n');
+            // console.log('Player ' + this.winning_player + ' starts.' + '\n');
 
             this.valid_suit = "";
         } else {
+
+            // console.log('num_suits', this.players[this.turn].num_suits, 'trick_suit', this.trick.get_suit(), 'card_suit', card.get_suit());
             // If it is not a new trick, check if it matches suit if possible
             // Check if the player has any of this suit left
             if (this.players[this.turn].num_suits[this.trick.get_suit()] != 0 && card.get_suit() != this.trick.get_suit()) {
@@ -99,18 +105,17 @@ module.exports = class Game {
             }
         }       
 
-        // save the card and remove it from the hand
-        
+        // remove it from the hand
         this.players[this.turn].hand.splice(ind,1)[0];
-        // the hand is the wrong hand - thats why the card is not being picked up
-
+        
+        // remove a value from the suits
         this.players[this.turn].num_suits[card.get_suit()]--;
 
         this.trick.cards.push(card);
 
-        this.turn = (this.turn + 1) % 4;
+        this.turn = (this.turn + 1) % num_players;
 
-        if (this.trick.cards.length == 4) {
+        if (this.trick.cards.length == num_players) {
             let get_winner = this.trick.get_winner();
 
             let winning_index = get_winner.winner;
@@ -128,7 +133,7 @@ module.exports = class Game {
             }
 
             // get the winning partner
-            this.winning_partner = (this.winning_player + 2) % 4;
+            this.winning_partner = (this.winning_player + 2) % num_players;
             
             console.log('winners', this.winning_player, this.winning_partner);
 
