@@ -7,7 +7,10 @@ module.exports = class Card {
         this.id = suits[suit] + value.toString();
     }
 
-    toString() { // need this for readline-synd
+    /**
+     * To string, used in readline-sync (deprecated)
+     */
+    toString() {
         let output;
 
         if (this.value == 11) {
@@ -25,6 +28,11 @@ module.exports = class Card {
         return this.suit + " " + output;
     }
 
+    /**
+     * Get the suit of the card
+     * 
+     * @return {number} this.suit
+     */
     get_suit() {
         return this.suit;
     }

@@ -6,6 +6,12 @@ module.exports = class Deck {
         this.deck = [];
     }
 
+    /**
+     * Creates a full deck of cards.
+     * 
+     * @param {number[]} suits 
+     * @param {number[]} values 
+     */
     create_deck(suits, values) {
         for (let suit = 0; suit < 4; suit++) {
             for (let value of values) {
@@ -14,6 +20,11 @@ module.exports = class Deck {
         }
     }
 
+    /**
+     * Shuffles the deck randomly.
+     * 
+     * @return {Card[]} this.deck
+     */
     shuffle_deck() {
         let counter = this.deck.length, temp, i;
 
@@ -27,6 +38,13 @@ module.exports = class Deck {
         return this.deck;
     }
 
+    /**
+     * Adds a card from the deck to a players hand and 
+     * then removes it from the deck to eliminate duplicates
+     * 
+     * @param {Card[]} hand 
+     * @param {Card[]} cards 
+     */
     deal(hand, cards) {
         
         while (hand.length < cards) {

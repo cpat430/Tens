@@ -4,12 +4,20 @@ module.exports = class Trick {
         this.trump = trump;
     }
 
+    /**
+     * Get the suit of the first card in the trick.
+     * 
+     * @return {number} this.cards[0].suit
+     */
     get_suit() {
         return this.cards[0].suit;
     }
 
-    // gets the winner assuming all cards played are valid
-    // returns the index of the trick that has won
+    /**
+     * Gets the winner of the trick, assuming that all the cards played are valid.
+     * 
+     * @return {number, Card[]} (winner, tens)
+     */
     get_winner() {
         let cards = this.cards,
             best = cards[0],
@@ -39,6 +47,15 @@ module.exports = class Trick {
     // the idea is that if the card follows trump suit, it has high value
     // if it follows startingSuit, it has normal value
     // if it does not follow, it has 0 value
+    /**
+     * Gets the card value for comparison when checking which card is the winner.
+     * The idea is that a trump will be worth 100 more points so that when comparing 
+     * just the number, it will always be higher. 
+     * 
+     * @param {number} startingSuit 
+     * @param {number} trumpSuit 
+     * @param {Card} card 
+     */
     cardValue(startingSuit, trumpSuit, card) {
         if (card.suit == trumpSuit) {
             return 100 + card.value;
@@ -49,6 +66,11 @@ module.exports = class Trick {
         }
     }
 
+    /**
+     * Get the cards in the trick in a string
+     * 
+     * @return {string} s
+     */
     toString() {
         let s = "";
         for (let i = 0; i < this.cards.length; i++) {
