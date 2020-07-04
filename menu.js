@@ -39,16 +39,18 @@ function updatePlayerNames(exist, room, names) {
         grid.style.display = "none";
     } else {
         grid.style.display = "flex";
-        let order = [3,2,0,1];
+        let order = [3,1,0,2];
 
         for (let i = 0; i < 4; i++) {
-            items[order[i]].innerHTML = names[i];
+           
 
-            if (names[i] == '') {
+            if (!names[i]) {
+                items[order[i]].innerHTML = '';
                 items[order[i]].classList.add('empty-room-person');
                 items[order[i]].classList.remove('full-room-person');
                 items[order[i]].onclick = function() {enterRoom(room, i)};
             } else {
+                items[order[i]].innerHTML = names[i];
                 items[order[i]].classList.add('full-room-person');
                 items[order[i]].classList.remove('empty-room-person');
                 items[order[i]].onclick = function() {};

@@ -45,7 +45,6 @@ let suits = ["S", "D", "C", "H"];
 // everything is initialised here
 io.on('connection', function (socket) {
     let id = -1;
-    let _roomid;
     let room = null;
     
     /**
@@ -57,7 +56,7 @@ io.on('connection', function (socket) {
      *          pos, position the player is sitting in.
      *          name (optional), the name corresponding to the current player.
      */
-    socket.on('new player', function(roomid, pos, name) {
+    socket.on('new player', function(roomid, pos) {
         
         // if the room does not exist, create a new room with the current ID
         if (!rooms.has(roomid)) {
@@ -67,6 +66,7 @@ io.on('connection', function (socket) {
         // get the room and add the socket and id to the room.
         room = rooms.get(roomid);
         room.room_sockets[pos] = socket;
+       
         id = pos;
         
         // initialise the client using the ID.
@@ -77,6 +77,8 @@ io.on('connection', function (socket) {
 
         // set the current turn so the client know how the turn arrow should be drawn.
         socket.emit('current-turn', room.game.turn);
+
+        updateAllNames();
         
         // if the player is the dealer, then open the trump modal.
         if (room.game.players[id].dealer) {
@@ -208,8 +210,12 @@ io.on('connection', function (socket) {
         let exist = false, names;
         if (rooms.has(roomid)) {
             exist = true;
-            names = rooms.get(roomid).player_names;
+            names = [];
+            for (let i = 0; i < 4; i++) {
+                names.push(rooms.get(roomid).room_sockets[i] ? rooms.get(roomid).player_names[i] : null);
+            }
         } 
+        
         socket.emit('responsePlayerNames', exist, roomid, names);
     });
 
@@ -276,7 +282,21 @@ io.on('connection', function (socket) {
                 thissocket.emit('updateName', id, name);
             }
         }
-    })
+    });
+
+    function updateAllNames() {
+        // update the name for all people
+        for (let i = 0; i < 4; i++) {
+            
+            // get the current socket
+            let thissocket = room.room_sockets[i];
+
+            // if the socket exists, update the name
+            if (thissocket) {
+                thissocket.emit('updateName', id, room.player_names[id]);
+            }
+        }
+    }
 });
 
 initializeExpress();

@@ -5,7 +5,7 @@ module.exports = class Room {
         this.game = new Game(Math.floor(Math.random() * 4)); // game instance
         this.player_counter = 0;
         this.room_sockets = [null, null, null, null];
-        this.player_names = ['', '', '', ''];
+        this.player_names = ['Player 1', 'Player 2', 'Player 3', 'Player 4'];
         this.roomid = roomid;
         this.currentTurn = 0;
     }
