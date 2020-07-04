@@ -16,6 +16,7 @@
 
 * {
     font-family: Baloo-Regular;
+    user-select: none; 
 }
 
 .background {
@@ -188,7 +189,6 @@ span {
     line-height: 700%;
     height: 50%;
     font-family: Baloo-Medium;
-    user-select: none; 
 }
 
 /* The Modal (background) */
