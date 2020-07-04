@@ -204,6 +204,7 @@ io.on('connection', function (socket) {
 
     // Asked by menu.js, returns if the game exists
     socket.on('queryPlayerNames', function(roomid) {
+        roomid = roomid.toUpperCase();
         let res = null;
         if (rooms.has(roomid)) {
             res = rooms.get(roomid).player_names;
