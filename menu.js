@@ -25,14 +25,6 @@ window.onclick = function(event) {
     }
 }
 
-/**
- * Checks if a room already exists
- * @param {string} roomid 
- */
-function checkRoomExist(roomid) {
-    socket.emit('roomExistQuery', roomid);
-}
-
 let input = document.getElementById('roomidinput');
 
 /**
@@ -47,27 +39,38 @@ function updatePlayerNames(names) {
         grid.style.display = "none";
     } else {
         grid.style.display = "flex";
-        let order = [0,1,3,2];
+        let order = [3,2,0,1];
 
         for (let i = 0; i < 4; i++) {
             items[order[i]].innerHTML = names[i];
 
-            if (names[i] === '') items[order[i]].onclick = function() {enterRoom(input.value, i)};
+            if (names[i] == '') {
+                items[order[i]].classList.add('empty-room-person');
+                items[order[i]].classList.remove('full-room-person');
+                items[order[i]].onclick = function() {enterRoom(input.value, i)};
+            } else {
+                items[order[i]].classList.add('full-room-person');
+                items[order[i]].classList.remove('empty-room-person');
+                items[order[i]].onclick = function() {};
+            }
         }
     }
 }
 
 /**
- * If the room exists, the changes are made to the room
+ * Response to 'queryPlayerNames'. If the room does not exist, res is null. else, it returns String array
  * 
  * @param {string[]} res
  */
-socket.on('roomExistResult', function(res) {
+socket.on('responsePlayerNames', function(res) {
     updatePlayerNames(res);
 });
 
+/**
+ * Asks the server for the player names of the room.
+ */
 input.oninput = function() {
-    checkRoomExist(input.value);
+    socket.emit('queryPlayerNames', input.value);
 }
 
 /**

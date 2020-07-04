@@ -203,8 +203,12 @@ io.on('connection', function (socket) {
     })
 
     // Asked by menu.js, returns if the game exists
-    socket.on('roomExistQuery', function(roomid) {
-        socket.emit('roomExistResult', room.player_names);
+    socket.on('queryPlayerNames', function(roomid) {
+        let res = null;
+        if (rooms.has(roomid)) {
+            res = rooms.get(roomid).player_names;
+        } 
+        socket.emit('responsePlayerNames', res);
     });
 
     /**

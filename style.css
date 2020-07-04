@@ -237,12 +237,22 @@ span {
     line-height: 300%;
 }
 
-.room-person {
+.empty-room-person {
     background-color: #dddddd;
     border-radius: 5px;
 }
 
-.room-person:hover {
+.empty-room-person:hover {
+    cursor: pointer;
+    box-shadow: 0px 0px 5px #888888;
+}
+
+.full-room-person {
+    background-color: red;
+    border-radius: 5px;
+}
+
+.full-room-person:hover {
     cursor: pointer;
     box-shadow: 0px 0px 5px #888888;
 }
