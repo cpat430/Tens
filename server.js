@@ -205,11 +205,12 @@ io.on('connection', function (socket) {
     // Asked by menu.js, returns if the game exists
     socket.on('queryPlayerNames', function(roomid) {
         roomid = roomid.toUpperCase();
-        let res = null;
+        let exist = false, names;
         if (rooms.has(roomid)) {
-            res = rooms.get(roomid).player_names;
+            exist = true;
+            names = rooms.get(roomid).player_names;
         } 
-        socket.emit('responsePlayerNames', res);
+        socket.emit('responsePlayerNames', exist, roomid, names);
     });
 
     /**

@@ -31,11 +31,11 @@ let input = document.getElementById('roomidinput');
  * Updates all the player names given a list of the names.
  * @param {string[]} names 
  */
-function updatePlayerNames(names) {
+function updatePlayerNames(exist, room, names) {
     let grid = document.getElementsByClassName('grid')[0];
     let items = document.getElementsByClassName('room-person');
 
-    if (!names) {
+    if (!exist) {
         grid.style.display = "none";
     } else {
         grid.style.display = "flex";
@@ -47,7 +47,7 @@ function updatePlayerNames(names) {
             if (names[i] == '') {
                 items[order[i]].classList.add('empty-room-person');
                 items[order[i]].classList.remove('full-room-person');
-                items[order[i]].onclick = function() {enterRoom(input.value, i)};
+                items[order[i]].onclick = function() {enterRoom(room, i)};
             } else {
                 items[order[i]].classList.add('full-room-person');
                 items[order[i]].classList.remove('empty-room-person');
@@ -62,8 +62,8 @@ function updatePlayerNames(names) {
  * 
  * @param {string[]} res
  */
-socket.on('responsePlayerNames', function(res) {
-    updatePlayerNames(res);
+socket.on('responsePlayerNames', function(exist, room, names) {
+    updatePlayerNames(exist, room, names);
 });
 
 /**

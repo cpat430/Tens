@@ -8,6 +8,11 @@
     src: url(./src/fonts/Baloo2-Medium.ttf);
 }
 
+:root {
+    --green: #83E383;
+    --light-green: #90ee90;
+}
+
 * {
     font-family: Baloo-Regular;
 }
@@ -128,16 +133,16 @@
 
 #ready {
     float: right;
-    background-color: #90ee90;
+    background-color: var(--light-green);
 }
 
 #ready:hover {
-    background-color: #83E383;
+    background-color: var(--green);
     cursor: pointer;
 }
 
 canvas {
-    background-color: #83E383;
+    background-color: var(--green);
 }
 
 h1 {
@@ -238,7 +243,7 @@ span {
 }
 
 .empty-room-person {
-    background-color: #dddddd;
+    background-color: var(--light-green);
     border-radius: 5px;
 }
 
@@ -248,13 +253,12 @@ span {
 }
 
 .full-room-person {
-    background-color: red;
+    background-color: #dddddd;
     border-radius: 5px;
 }
 
 .full-room-person:hover {
-    cursor: pointer;
-    box-shadow: 0px 0px 5px #888888;
+   
 }
 
 .cardholder {
