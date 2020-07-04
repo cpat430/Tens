@@ -11,6 +11,7 @@
 :root {
     --green: #83E383;
     --light-green: #90ee90;
+    --extra-light-green: #eefbee;
 }
 
 * {
@@ -18,7 +19,7 @@
 }
 
 .background {
-    background-color: #EFF7F6;
+    background-color: var(--extra-light-green);
 }
 
 #header {
@@ -166,11 +167,11 @@ span {
     display: inline-block;
 }
 .main-button {
-    background-color: #C5FCD8;
+    background-color: var(--light-green);
     height: 50px;
     font-size: 20px;
     width: 300px;
-    margin: 10px;
+    margin: 20px;
     line-height: 250%;
     border-radius: 5px;
     box-shadow: 0px 0px 5px #888888;
@@ -178,7 +179,7 @@ span {
 
 .main-button:hover {
     cursor: pointer;
-    background-color: #D8FDE5;
+    background-color: var(--green);
     box-shadow: 0px 0px 8px #888888;
 }
 
