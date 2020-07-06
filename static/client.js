@@ -375,12 +375,7 @@ function initializeListeners() {
      * @param {string} name
      */
     socket.on('updateName', function(pos, name) {
-        let relPos = (pos - id + 4) % 4;
-
-        drawName(relPos, name);
-
-        let span = document.getElementById('team-player' + pos);
-        span.innerHTML = name;
+        drawName(pos, name);
     });
 
     socket.on('redraw-status', function(trick, team1Status, team2Status, names) {
@@ -497,13 +492,19 @@ function drawArrow(pos) {
     }, false); // no idea what the false means    
 }
 
+function drawName(pos, name) {
+    let relPos = (pos - id + 4) % 4;
+    drawNameOnCanvas(relPos, name);
+    drawNameOnTeamName(pos, name);
+}
+
 /**
  * Draws the name on the canvas
  * 
  * @param {number} pos 
  * @param {string} name 
  */
-function drawName(pos, name) {
+function drawNameOnCanvas(pos, name) {
     
     // get the x and y of the position
     let {x,y} = calculateNamePosition(pos);
@@ -528,6 +529,12 @@ function drawName(pos, name) {
     context.fillStyle = 'black';
     context.fillText(name, 0, lineHeight / 2);
     context.restore();
+    
+}
+
+function drawNameOnTeamName(pos, name) {
+    let span = document.getElementById('team-player' + pos);
+    span.innerHTML = name;
 }
 
 /**
@@ -698,11 +705,11 @@ function redrawGameStatus(trick, team1Status, team2Status, names) {
     
     // update the score for team 2
 
+    console.log('id:', id);
+
     // update the names
     for (let i = 0; i < names.length; i++) {
-        let relPlayer = (i - id + 4) % 4;
-
-        drawName(relPlayer, names[i]);
+        drawName(i, names[i]);
     }
 }
 

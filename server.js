@@ -101,6 +101,8 @@ io.on('connection', function (socket) {
         let team2Status = {team2Tricks, team2Tens, team2Score};
         let names = room.player_names;
 
+        console.log(names);
+
         socket.emit('redraw-status', game.trick, team1Status, team2Status, names);
     });
 
