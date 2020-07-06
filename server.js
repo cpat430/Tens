@@ -309,7 +309,7 @@ io.on('connection', function (socket) {
             let thissocket = room.room_sockets[i];
 
             // if the socket exists, update the name
-            if (socketExisits(thissocket)) {
+            if (socketExists(thissocket)) {
                 thissocket.emit('updateName', id, name);
             }
         }

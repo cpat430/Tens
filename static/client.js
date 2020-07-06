@@ -680,7 +680,7 @@ function redrawGameStatus(trick, team1Status, team2Status, names) {
             drawCardOnCanvas(relPlayer, cardID);
         }
     }
-    
+
     let {team1Tricks, team1Tens, team1Score} = team1Status;
     let {team2Tricks, team2Tens, team2Score} = team2Status;
     // update the scoreboards
@@ -712,6 +712,13 @@ function redrawGameStatus(trick, team1Status, team2Status, names) {
     // update the score for team 1
     
     // update the score for team 2
+
+    // update the names
+    for (let i = 0; i < names.length; i++) {
+        let relPlayer = (i - id + 4) % 4;
+
+        drawName(relPlayer, names[i]);
+    }
 }
 
 /**
