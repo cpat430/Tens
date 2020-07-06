@@ -82,7 +82,7 @@ io.on('connection', function (socket) {
         updateAllNames();
         
         // if the player is the dealer, then open the trump modal.
-        if (room.game.players[id].dealer) {
+        if (room.game.trump == -1 && room.game.players[id].dealer) {
             socket.emit('open-trump-modal');
         }
 
@@ -168,7 +168,9 @@ io.on('connection', function (socket) {
 
                     // reset the canvas
                     for (let i = 0; i < 4; i++) {
-                        room.room_sockets[i].emit('reset-canvas');
+                        if (socketExists(room.room_sockets[i])) {
+                            room.room_sockets[i].emit('reset-canvas');
+                        }
                     }
 
                     // reset the current turn counter to 0.
