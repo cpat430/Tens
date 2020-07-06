@@ -8,6 +8,7 @@ var server = http.Server(app);
 var io = socketIO(server);
 var Room = require('./Room.js');
 const { exists } = require('fs');
+const { emit } = require('process');
 
 const PORT = process.env.PORT || 5000;
 
@@ -63,13 +64,20 @@ io.on('connection', function (socket) {
         if (!rooms.has(roomid)) {
             rooms.set(roomid, new Room(roomid));
         }
-        
+
         // get the room and add the socket and id to the room.
         room = rooms.get(roomid);
+
+        // if the room is full
+        if (room.room_sockets[pos] != null) {
+            socket.emit('full-game');
+            return;
+        }
+
         room.room_sockets[pos] = socket;
        
         id = pos;
-        
+
         // initialise the client using the ID.
         socket.emit('init', id);
 
@@ -101,12 +109,11 @@ io.on('connection', function (socket) {
         let team2Status = {team2Tricks, team2Tens, team2Score};
         let names = room.player_names;
 
-        console.log(names);
-
         socket.emit('redraw-status', game.trick, team1Status, team2Status, names);
     });
 
     socket.on('disconnect', function() {
+
         if (room) {
             room.room_sockets[id] = null;
         }
