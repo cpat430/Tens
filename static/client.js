@@ -383,6 +383,9 @@ function initializeListeners() {
         let relPos = (pos - id + 4) % 4;
 
         drawName(relPos, name);
+
+        let span = document.getElementById('team-player' + pos);
+        span.innerHTML = name;
     })
 }
 
