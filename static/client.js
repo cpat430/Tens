@@ -235,6 +235,12 @@ function initializeListeners() {
         underlineTeamName(id);
     });
 
+    socket.on('full-game', function() {
+        goToMenu();
+        
+        alert('Game full, sorry');
+    });
+
     /**
      * Draw the arrow to show who's the current turn is.
      * 
