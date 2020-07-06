@@ -93,9 +93,6 @@ function clearTable() {
  * @param {number} trump 
  */
 function chooseTrump(trump) {
-
-    console.log('this is the trump number', trump);
-
     socket.emit('update-trump', trump, this.id);
 
     // close the modal and deal the rest of the hand.
@@ -207,7 +204,6 @@ function addPointToScoreboard(winner) {
  */
 function deleteAllFromDiv(div) {
     div.innerHTML = "";
-    console.log(div);
 }
 
 /**
@@ -451,34 +447,18 @@ function updateName(name) {
     socket.emit('updateName', name);
 }
 
-/**
- * initialise the game over modal.
- */
-function initialiseModal() {
-    // Get the modal
-    var modal = document.getElementById("game-over-modal");
+let navopen = false;
+window.onclick = function(event) {
+    let modal = document.getElementById("game-over-modal");
+    let nav = document.getElementById("mySidenav");
+    let navbutton = document.getElementById("sidenav-button");
+    
+    if (event.target == navbutton) {
 
-    // Get the button that opens the modal
-    var btn = document.getElementById("open-modal-button");
-
-    // Get the <span> element that closes the modal
-    var span = document.getElementsByClassName("close")[0];
-
-    // When the user clicks on the button, open the modal
-    btn.onclick = function() {
-        modal.style.display = "block";
-    }
-
-    // When the user clicks on <span> (x), close the modal
-    span.onclick = function() {
+    } else if (event.target == modal) {
         modal.style.display = "none";
-    }
-
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
+    } else if (event.target != nav) {
+        closeNav();
     }
 }
 
@@ -644,6 +624,7 @@ function goToMenu() {
  * Open the side navigation bar
  */
 function openNav() {
+    navopen = true;
     document.getElementById("mySidenav").style.width = "20%";
 }
 
@@ -651,6 +632,7 @@ function openNav() {
  * Close the side navigation bar
  */
 function closeNav() {
+    navopen = false;
     document.getElementById("mySidenav").style.width = "0";
 }
 
@@ -755,8 +737,6 @@ function changeName(name) {
 }
 
 let pname = document.getElementById('name0');
-console.log(pname);
 pname.onkeyup = function(e) {
     changeName(pname.innerHTML);
-    console.log(e);
 }
