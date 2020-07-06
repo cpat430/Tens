@@ -8,6 +8,8 @@ module.exports = class Room {
         this.player_names = ['Player 1', 'Player 2', 'Player 3', 'Player 4'];
         this.roomid = roomid;
         this.currentTurn = 0;
+        this.team1Score = 0;
+        this.team2Score = 0;
     }
 
     /**

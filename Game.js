@@ -83,6 +83,7 @@ module.exports = class Game {
 
             // find the person who starts
             this.turn = this.winning_player;
+            this.trick.first = this.winning_player;
 
             // console.log('Player ' + this.winning_player + ' starts.' + '\n');
 

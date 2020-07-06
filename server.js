@@ -7,6 +7,7 @@ var app = express();
 var server = http.Server(app);
 var io = socketIO(server);
 var Room = require('./Room.js');
+const { exists } = require('fs');
 
 const PORT = process.env.PORT || 5000;
 
@@ -84,6 +85,29 @@ io.on('connection', function (socket) {
         if (room.game.players[id].dealer) {
             socket.emit('open-trump-modal');
         }
+
+        // will need to redraw the status
+
+        let game = room.game;
+
+        let team1Tricks = game.players[0].tricks.length + game.players[2].tricks.length;
+        let team1Tens = [...game.players[0].tens, ...game.players[2].tens];
+        let team1Score = room.team1Score;
+        let team2Tricks = game.players[1].tricks.length + game.players[3].tricks.length;
+        let team2Tens = [...game.players[1].tens, ...game.players[3].tens];
+        let team2Score = room.team2Score;
+
+        let team1Status = {team1Tricks, team1Tens, team1Score};
+        let team2Status = {team2Tricks, team2Tens, team2Score};
+        let names = room.player_names;
+
+        socket.emit('redraw-status', game.trick, team1Status, team2Status, names);
+    });
+
+    socket.on('disconnect', function() {
+        if (room) {
+            room.room_sockets[id] = null;
+        }
     });
 
     /**
@@ -131,7 +155,9 @@ io.on('connection', function (socket) {
 
                     // take the winner and update their scoreboard
                     for (let i = 0; i < 4; i++) {
-                        room.room_sockets[i].emit('update-scoreboard', gameOver, tens, winner);
+                        if (socketExists(room.room_sockets[i])) {
+                            room.room_sockets[i].emit('update-scoreboard', gameOver, tens, winner);
+                        }
                     }
                 }
                 
@@ -154,7 +180,9 @@ io.on('connection', function (socket) {
                     let relPlayer = (id - i + 4) % 4;
 
                     // emit the move.
-                    room.room_sockets[i].emit('update-move', cardId, relPlayer);
+                    if (socketExists(room.room_sockets[i])) {
+                        room.room_sockets[i].emit('update-move', cardId, relPlayer);
+                    }
                 }
 
                 // redraw the hand.
@@ -192,7 +220,10 @@ io.on('connection', function (socket) {
 
             // change the current turn for all the clients.
             for (let i = 0; i < 4; i++) {
-                room.room_sockets[i].emit('current-turn', room.game.turn);
+                
+                if (socketExists(room.room_sockets[i])) {
+                    room.room_sockets[i].emit('current-turn', room.game.turn);
+                }
             }
         }
     });
@@ -239,7 +270,7 @@ io.on('connection', function (socket) {
             let thissocket = room.room_sockets[i];
 
             // if the socket exists.
-            if (thissocket) {
+            if (socketExists(thissocket)) {
 
                 // initialise the hand 
                 thissocket.emit('initialiseHand', room.game.players[i].hand);
@@ -278,7 +309,7 @@ io.on('connection', function (socket) {
             let thissocket = room.room_sockets[i];
 
             // if the socket exists, update the name
-            if (thissocket) {
+            if (socketExisits(thissocket)) {
                 thissocket.emit('updateName', id, name);
             }
         }
@@ -296,6 +327,21 @@ io.on('connection', function (socket) {
                 thissocket.emit('updateName', id, room.player_names[id]);
             }
         }
+    };
+
+    /**
+     * Checks if a socket exists
+     * 
+     * @param {Socket} socket 
+     * 
+     * @return {boolean} exists
+     */
+    function socketExists(socket) {
+        if (socket) {
+            return true;
+        }
+
+        return false;
     }
 });
 

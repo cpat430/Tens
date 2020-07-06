@@ -191,6 +191,15 @@ function addTenToScoreboard(team, ten) {
     addCardToDiv(teamTens, ten.id);
 }
 
+function addPointToScoreboard(winner) {
+    let id = 'team' + winner + '-total-score';
+
+    let winningTeam = document.getElementById(id);
+    
+    winningTeam.innerHTML++;
+    return;
+}
+
 /**
  * delete all the contents from the div
  * 
@@ -279,24 +288,7 @@ function initializeListeners() {
      */
     socket.on('update-move', function(cardId, relPlayer) {
 
-        // find the coordinates of the relative player. 
-        let {x,y} = calculatePlayer(relPlayer);
-        
-        // get the card's image value
-        
-        // create a new image for the played card
-        let img = new Image();
-        img.src = 'src/cards/' + cardId + '.png';
-        
-        // get the context of the canvas
-        let context = canvas.getContext("2d");
-        
-        // once the image loads, it will place the card on the screen
-        img.addEventListener('load', function() {
-            // draw the card on the board
-            context.drawImage(img, x, y, tableCardWidth, tableCardHeight);
-
-        }, false); // no idea what the false means
+        drawCardOnCanvas(relPlayer, cardId);
     });
     
     /**
@@ -334,11 +326,14 @@ function initializeListeners() {
 
         // if the game is over, add a score to the total score.
         if (gameOver) {
-            let id = 'team' + winner + '-total-score';
-            let winningTeam = document.getElementById(id);
-            
-            winningTeam.innerHTML++;
-            return;
+
+            if (winner == 1) {
+                room.team1Score++;
+            } else {
+                room.team2Score++;
+            }
+
+            addPointToScoreboard(winner);
         }
     });
 
@@ -387,6 +382,10 @@ function initializeListeners() {
         let relPos = (pos - id + 4) % 4;
 
         drawName(relPos, name);
+    });
+
+    socket.on('redraw-status', function(trick, team1Status, team2Status, names) {
+        redrawGameStatus(trick, team1Status, team2Status, names);
     })
 }
 
@@ -549,6 +548,33 @@ function drawName(pos, name) {
 }
 
 /**
+ * Draw the card on the canvas with the given cardID
+ * 
+ * @param {number} relPlayer 
+ * @param {string} cardId 
+ */
+function drawCardOnCanvas(relPlayer, cardId) {
+    // find the coordinates of the relative player. 
+    let {x,y} = calculatePlayer(relPlayer);
+    
+    // get the card's image value
+    
+    // create a new image for the played card
+    let img = new Image();
+    img.src = 'src/cards/' + cardId + '.png';
+    
+    // get the context of the canvas
+    let context = canvas.getContext("2d");
+    
+    // once the image loads, it will place the card on the screen
+    img.addEventListener('load', function() {
+        // draw the card on the board
+        context.drawImage(img, x, y, tableCardWidth, tableCardHeight);
+
+    }, false); // no idea what the false means
+};
+
+/**
  * Calculates the position of the name
  * 
  * @param {number} pos 
@@ -632,6 +658,61 @@ enterRoom();
 initializeListeners();
 initializeCanvas();
 closeNav();
+
+/**
+ * 
+ * @param {Trick} trick 
+ * @param {[number, string[], number]} team1Status 
+ * @param {[number, string[], number]} team2Status 
+ * @param {string[]} names 
+ */
+function redrawGameStatus(trick, team1Status, team2Status, names) {
+
+    if (trick) {
+        let firstPlayer = trick.first;
+
+        // display the cards that have already been played.
+        for (let i = 0; i < trick.cards.length; i++) {
+            // get the card ID of the trick
+            let cardID = trick.cards[i].id;
+            let relPlayer = ((firstPlayer + i) - id + 4) % 4;
+
+            drawCardOnCanvas(relPlayer, cardID);
+        }
+    }
+    
+    let {team1Tricks, team1Tens, team1Score} = team1Status;
+    let {team2Tricks, team2Tens, team2Score} = team2Status;
+    // update the scoreboards
+
+    // update team 1 tricks
+    for (let i = 0; i < team1Tricks; i++) {
+        // draw a back for each trick
+        addTrickToScoreboard('team1');
+    }
+
+    // update team 2 tricks
+    for (let i = 0; i < team2Tricks; i++) {
+        // draw a back for each trick
+        addTrickToScoreboard('team2');
+    }
+
+    // update team 1 tens
+    for (let i = 0; i < team1Tens.length; i++) {
+        let card = team1Tens[i];
+        addTenToScoreboard('team1', card);
+    }
+
+    // update team 2 tens
+    for (let i = 0; i < team2Tens.length; i++) {
+        let card = team2Tens[i];
+        addTenToScoreboard('team2', card);
+    }
+
+    // update the score for team 1
+    
+    // update the score for team 2
+}
 
 /**
  * Shows the game over modal
