@@ -613,7 +613,6 @@ function closeNav() {
 enterRoom();
 initializeListeners();
 initializeCanvas();
-initialiseModal();
 closeNav();
 
 /**
