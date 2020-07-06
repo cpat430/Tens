@@ -289,6 +289,9 @@ io.on('connection', function (socket) {
                 // reset the canvas
                 thissocket.emit('reset-canvas');
 
+                // add the arrow
+                thissocket.emit('current-turn', room.game.turn);
+
                 // reset the tens and the tricks.
                 thissocket.emit('reset-tens-and-tricks');
 
